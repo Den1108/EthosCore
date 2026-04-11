@@ -1,11 +1,10 @@
-package com.den1108.worldexe;
+package studio.arcana.ethos;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import java.util.List;
-import java.util.ArrayList;
 
 public class DialogueScreen extends Screen {
     private final String npcName;
@@ -22,35 +21,38 @@ public class DialogueScreen extends Screen {
     @Override
     protected void init() {
         int buttonWidth = 200;
-        int startY = this.height / 2 + 10;
+        int startY = this.height / 2 + 20;
 
-        // Создаем кнопки на основе переданных вариантов ответа
         for (int i = 0; i < options.size(); i++) {
             DialogueOption option = options.get(i);
             this.addRenderableWidget(Button.builder(Component.literal(option.text), (button) -> {
                 option.action.run();
                 this.onClose();
-            }).bounds(this.width / 2 - buttonWidth / 2, startY + (i * 25), buttonWidth, 20).build());
+            }).bounds(this.width / 2 - buttonWidth / 2, startY + (i * 24), buttonWidth, 20).build());
         }
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics); // Затемнение фона игры
+        this.renderBackground(guiGraphics);
         
-        // Рисуем плашку под текст
-        int bgX = this.width / 2 - 150;
-        int bgY = this.height / 2 - 70;
-        guiGraphics.fill(bgX, bgY, bgX + 300, bgY + 150, 0xAA000000);
+        int bgX = this.width / 2 - 160;
+        int bgY = this.height / 2 - 80;
+        // Отрисовка основного окна диалога
+        guiGraphics.fill(bgX, bgY, bgX + 320, bgY + 160, 0xCC000000);
         
-        // Имя NPC и основной текст
-        guiGraphics.drawString(this.font, "§e" + npcName, bgX + 10, bgY + 10, 0xFFFFFF);
-        guiGraphics.drawWordWrap(this.font, Component.literal(dialogueText), bgX + 10, bgY + 30, 280, 0xFFFFFF);
+        // Текст
+        guiGraphics.drawString(this.font, "§b" + npcName, bgX + 15, bgY + 15, 0xFFFFFF);
+        guiGraphics.drawWordWrap(this.font, Component.literal(dialogueText), bgX + 15, bgY + 40, 290, 0xDDDDDD);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
-    // Вспомогательный класс для вариантов ответа
+    @Override
+    public boolean isPauseScreen() {
+        return false; // Игра не ставится на паузу в диалоге (как в сюжетных сборках)
+    }
+
     public static class DialogueOption {
         String text;
         Runnable action;

@@ -1,12 +1,10 @@
 modLoader="javafml"
 loaderVersion="[47,)"
 license="MIT"
-issueTrackerURL="https://github.com/Den1108/world.exe/issues"
 
 [[mods]]
-modId="worldexe"
+modId="ethoscore"
 version="1.0.0"
-displayName="World.exe"
-displayURL="https://github.com/Den1108/world.exe"
+displayName="EthosCore"
 authors="Den1108"
-description="Системный терминал и квестовая система для проекта World.exe"
+description="Storytelling and Questing engine for Ethos project."
