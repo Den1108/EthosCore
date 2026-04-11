@@ -1,0 +1,16 @@
+{
+  "npc_name": "Техник Вика",
+  "dialogue_text": "Система EthosCore запущена. Мне нужны данные из сектора 47 для калибровки. Поможешь?",
+  "options": [
+    {
+      "text": "Конечно, что нужно делать?",
+      "action_type": "ACCEPT_QUEST",
+      "action_value": "Калибровка Сектора 47"
+    },
+    {
+      "text": "Не сейчас.",
+      "action_type": "CLOSE",
+      "action_value": ""
+    }
+  ]
+}
