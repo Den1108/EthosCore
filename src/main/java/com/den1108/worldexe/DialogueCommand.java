@@ -2,9 +2,11 @@ package com.den1108.worldexe;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.commands.Commands;
 import net.minecraft.client.Minecraft;
 import java.util.Arrays;
+
 
 public class DialogueCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
