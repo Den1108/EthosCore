@@ -1,0 +1,40 @@
+name: World.exe Build
+# Запускать сборку при каждом пуше в ветку main
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Загружаем код из репозитория
+    - uses: actions/checkout@v4
+
+    # 2. Устанавливаем Java 17 (нужна для 1.20.1)
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # 3. Даем права на запуск градла (для Linux серверов GitHub)
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # 4. Сама сборка мода
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    # 5. Сохраняем готовый .jar файл в артефакты (чтобы его можно было скачать)
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: WorldExe-Build
+        path: build/libs/*.jar
