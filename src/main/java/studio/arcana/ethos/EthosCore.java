@@ -8,7 +8,6 @@ import net.minecraftforge.event.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// Импортируем наши классы из новых пакетов
 import studio.arcana.ethos.commands.DialogueCommand;
 import studio.arcana.ethos.logic.QuestManager;
 
@@ -18,11 +17,9 @@ public class EthosCore {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EthosCore() {
-        // Регистрация событий
+        // Регистрация этого экземпляра класса в шине событий Forge
         MinecraftForge.EVENT_BUS.register(this);
         
-        // Загружаем прогресс квестов при запуске
-        // Это важно, чтобы список принятых заданий не обнулялся
         try {
             QuestManager.loadProgress();
             LOGGER.info("EthosCore: Quest progress loaded.");
@@ -35,15 +32,16 @@ public class EthosCore {
 
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
-        // Регистрация команд. Теперь Java знает, что DialogueCommand 
-        // находится в пакете studio.arcana.ethos.commands
         DialogueCommand.register(event.getDispatcher());
     }
 
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    // Добавляем аннотацию, чтобы Forge видел этот метод
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        // Проверяем фазу и сторону
         if (event.phase == TickEvent.Phase.END && event.side.isClient()) {
-            // Проверяем предметы раз в секунду (20 тиков), чтобы не нагружать ПК
-            if (event.player.tickCount % 20 == 0) {
+            // Проверяем инвентарь раз в секунду
+            if (event.player != null && event.player.tickCount % 20 == 0) {
                 QuestManager.checkItems(event.player);
             }
         }
