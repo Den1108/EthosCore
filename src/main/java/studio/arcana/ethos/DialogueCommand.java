@@ -11,6 +11,7 @@ import net.minecraft.server.packs.resources.Resource;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class DialogueCommand {
             Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(location);
 
             if (resource.isPresent()) {
-                try (Reader reader = new InputStreamReader(resource.get().open())) {
+                try (Reader reader = new InputStreamReader(resource.get().open(), StandardCharsets.UTF_8)) {
                     DialogueData data = GSON.fromJson(reader, DialogueData.class);
                     
                     List<DialogueScreen.DialogueOption> options = new ArrayList<>();
