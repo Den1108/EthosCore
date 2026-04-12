@@ -11,7 +11,6 @@ import studio.arcana.ethos.logic.QuestManager;
 public class QuestJournalScreen extends Screen {
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/journal_bg.png");
     
-    // Теперь это и размер окна, и размер картинки. Один к одному.
     private final int bgWidth = 300; 
     private final int bgHeight = 200;
 
@@ -26,10 +25,11 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // Кнопки на левой странице
-        int buttonX = x + 10; 
+        // Кнопки: отступаем 8 пикселей от края (3 рамка + 5 запас)
+        int buttonX = x + 8; 
         int buttonY = y + 35;
-        int buttonWidth = 125; 
+        // Ширина кнопки 135, чтобы она заканчивалась на 143 (не доходя до сгиба)
+        int buttonWidth = 135; 
 
         this.clearWidgets();
 
@@ -55,25 +55,24 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // САМЫЙ ПРОСТОЙ БЛИТ:
-        // Рисует картинку 300x200 из файла 300x200. Никакого растяжения.
-        guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgWidth, bgHeight, bgWidth, bgHeight);
+        // Отрисовка фона 300x200
+        guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgWidth, bgHeight, 300, 200);
         
-        // Текст "ЗАДАНИЯ" (лево)
-        guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 72, y + 15, 0xFFFFFF);
+        // Заголовок левой страницы
+        guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 75, y + 15, 0xFFFFFF);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        // Правая панель (Детали)
-        int rightX = x + 155; 
+        // Правая страница (начало текста с 158 пикселя)
+        int rightX = x + 158; 
         int rightY = y + 15;
         
         if (selectedQuest != null) {
-            // Название
+            // Название квеста
             guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightX + 65, rightY, 0xFFFFFF);
             
-            // Описание (ширина 130 чтобы не вылезало за край 300)
-            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 22, 130, 0xDDDDDD);
+            // Описание (ширина 132, чтобы не наехать на правую рамку 297)
+            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 22, 132, 0xDDDDDD);
             
             int taskY = rightY + 80;
             guiGraphics.drawString(this.font, "§6Задачи:", rightX, taskY, 0xFFFFFF);
@@ -85,8 +84,6 @@ public class QuestJournalScreen extends Screen {
                     guiGraphics.drawString(this.font, status + "§f" + obj.description, rightX, taskY, 0xFFFFFF);
                 }
             }
-        } else if (!QuestManager.getActiveQuests().isEmpty()) {
-            guiGraphics.drawCenteredString(this.font, "§8Выберите квест", rightX + 65, y + 90, 0xFFFFFF);
         }
     }
 
