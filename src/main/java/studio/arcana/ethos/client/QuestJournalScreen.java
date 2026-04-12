@@ -11,9 +11,9 @@ import studio.arcana.ethos.logic.QuestManager;
 public class QuestJournalScreen extends Screen {
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/journal_bg.png");
     
-    // Теперь размеры GUI и Текстуры СОВПАДАЮТ
-    private final int bgWidth = 600; 
-    private final int bgHeight = 400;
+    // ЛОГИЧЕСКИЙ РАЗМЕР (размер на экране игрока)
+    private final int bgWidth = 300; 
+    private final int bgHeight = 200;
 
     private QuestData selectedQuest = null;
 
@@ -23,14 +23,13 @@ public class QuestJournalScreen extends Screen {
 
     @Override
     protected void init() {
-        // Вычисляем центр экрана для нашего окна 600x400
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // Позиции кнопок (подгоняем под твои 600x400)
-        int buttonX = x + 35; // 35px от края книги
-        int buttonY = y + 60; // Чуть ниже заголовка
-        int buttonWidth = 220; // Кнопки пошире для левой страницы
+        // Координаты кнопок (теперь они в логических единицах)
+        int buttonX = x + 15; 
+        int buttonY = y + 30;
+        int buttonWidth = 115; 
 
         this.clearWidgets();
 
@@ -39,13 +38,13 @@ public class QuestJournalScreen extends Screen {
                 buttonX, 
                 buttonY, 
                 buttonWidth, 
-                20, 
+                18, // Чуть тоньше кнопки
                 Component.literal(quest.title), 
                 (button) -> {
                     this.selectedQuest = quest;
                 }
             ));
-            buttonY += 24;
+            buttonY += 22;
         }
     }
 
@@ -56,32 +55,40 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // ГЛАВНОЕ ИСПРАВЛЕНИЕ ТУТ:
-        // Используем blit, где последние два параметра — это ПОЛНЫЙ размер твоего .png файла.
-        // Если файл 600x400, то и в конце должно быть 600, 400.
+        // ВАЖНЫЙ МОМЕНТ:
+        // bgWidth/bgHeight (300x200) — сколько места займет на экране.
+        // 600, 400 — реальный размер твоего PNG файла.
+        // Minecraft сам аккуратно сожмет картинку, и она будет выглядеть четко.
         guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgWidth, bgHeight, 600, 400);
         
-        // Текст для левой панели (Заголовок)
-        guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 145, y + 35, 0xFFFFFF);
+        // Текст левой страницы
+        guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 72, y + 15, 0xFFFFFF);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        // Текст для правой панели
-        int rightPageX = x + 330; 
-        int rightPageY = y + 35;
+        // Текст правой страницы
+        int rightPageX = x + 155; 
+        int rightPageY = y + 15;
         
         if (selectedQuest != null) {
-            guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightPageX + 125, rightPageY, 0xFFFFFF);
-            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightPageX, rightPageY + 30, 250, 0xDDDDDD);
+            // Название
+            guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightPageX + 65, rightPageY, 0xFFFFFF);
             
-            int taskY = rightPageY + 120;
+            // Описание (ширина 130 логических единиц)
+            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightPageX, rightPageY + 20, 130, 0xDDDDDD);
+            
+            int taskY = rightPageY + 75;
             guiGraphics.drawString(this.font, "§6Задачи:", rightPageX, taskY, 0xFFFFFF);
             
             if (selectedQuest.objectives != null) {
                 for (QuestData.Objective obj : selectedQuest.objectives) {
-                    taskY += 15;
+                    taskY += 12;
                     String status = (obj.current_progress >= obj.amount_required) ? "§a✔ " : "§8- ";
-                    guiGraphics.drawString(this.font, status + "§f" + obj.description + " §8(" + obj.current_progress + "/" + obj.amount_required + ")", rightPageX, taskY, 0xFFFFFF);
+                    guiGraphics.drawString(this.font, status + "§f" + obj.description, rightPageX, taskY, 0xFFFFFF);
+                    
+                    // Прогресс отдельной строкой или в той же
+                    String progress = " §8(" + obj.current_progress + "/" + obj.amount_required + ")";
+                    guiGraphics.drawString(this.font, progress, rightPageX + 100, taskY, 0xFFFFFF);
                 }
             }
         }
