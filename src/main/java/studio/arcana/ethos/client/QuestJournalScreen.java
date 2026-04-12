@@ -9,11 +9,12 @@ import studio.arcana.ethos.data.QuestData;
 import studio.arcana.ethos.logic.QuestManager;
 
 public class QuestJournalScreen extends Screen {
-    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/journal_bg.png");
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID + ":textures/gui/journal_bg.png");
     
     private final int bgWidth = 280;
     private final int bgHeight = 180;
     
+    // Храним выбранный квест здесь
     private QuestData selectedQuest = null;
 
     public QuestJournalScreen() {
@@ -25,80 +26,66 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // Сдвигаем кнопки так, чтобы они четко попадали в левое поле (как на скрине 2)
-        int listX = x + 10; 
-        int listY = y + 35;
-        int buttonWidth = 110; // Немного увеличим для удобства клика
-
-        this.clearWidgets(); // Очищаем старые виджеты при изменении размера окна
+        int listX = x + 15; // Отступ кнопок от левого края фона
+        int listY = y + 40;
+        int buttonWidth = 100; // Кнопки теперь уже, чтобы влезть в левую колонку
 
         for (QuestData quest : QuestManager.getActiveQuests()) {
             this.addRenderableWidget(new EthosButton(
                 listX, 
                 listY, 
                 buttonWidth, 
-                18, // Уменьшил высоту, чтобы список был компактнее
+                20, 
                 Component.literal(quest.title), 
                 (button) -> {
+                    // Вместо открытия нового экрана просто меняем выбранный квест
                     this.selectedQuest = quest;
                 }
             ));
-            listY += 20; // Расстояние между кнопками
+            listY += 22;
         }
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // 1. Сначала фон затемнения игры
         this.renderBackground(guiGraphics);
         
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // 2. Отрисовка основной текстуры блокнота
+        // 1. Рисуем фон журнала
         guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgWidth, bgHeight, bgWidth, bgHeight);
         
-        // 3. Заголовок "ЗАДАНИЯ" (левая страница)
-        guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 65, y + 15, 0xFFFFFF);
+        // 2. Заголовок
+        guiGraphics.drawCenteredString(this.font, "§6§lСПИСОК ЗАДАНИЙ", x + 65, y + 15, 0xFFFFFF);
 
-        // 4. Отрисовка кнопок (виджетов)
-        // ВАЖНО: super.render рисует кнопки. Рисуем их ДО текста квеста, 
-        // чтобы текст правой страницы не перекрывался кнопками, если они широкие.
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-
-        // 5. Отрисовка деталей квеста (правая страница)
+        // 3. Если квест выбран — рисуем детали в правой части
         if (selectedQuest != null) {
-            renderQuestDetails(guiGraphics, x + 135, y + 20);
+            renderQuestDetails(guiGraphics, x + 130, y + 20);
         } else {
-            // Текст-заглушка
-            guiGraphics.drawCenteredString(this.font, "§8Выберите квест", x + 205, y + 80, 0xFFFFFF);
+            guiGraphics.drawString(this.font, "§8Выберите квест...", x + 140, y + 80, 0xFFFFFF);
         }
+
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     private void renderQuestDetails(GuiGraphics guiGraphics, int x, int y) {
-        // Название квеста
-        guiGraphics.drawString(this.font, "§e" + selectedQuest.title, x + 5, y + 5, 0xFFFFFF);
+        // Название выбранного квеста
+        guiGraphics.drawString(this.font, "§e" + selectedQuest.title, x + 10, y + 10, 0xFFFFFF);
         
-        // Линия-разделитель (опционально, можно убрать)
-        // guiGraphics.fill(x + 5, y + 18, x + 130, y + 19, 0x44FFFFFF);
-
-        // Описание
+        // Описание (с переносом строк)
         guiGraphics.drawWordWrap(this.font, Component.literal("§f" + selectedQuest.description), 
-            x + 5, y + 25, 125, 0xFFFFFF);
+            x + 10, y + 30, bgWidth / 2 - 20, 0xFFFFFF);
         
-        int taskY = y + 85;
-        guiGraphics.drawString(this.font, "§6Задачи:", x + 5, taskY, 0xFFFFFF);
+        // Задачи
+        int taskY = y + 80;
+        guiGraphics.drawString(this.font, "§6Задачи:", x + 10, taskY, 0xFFFFFF);
         
-        if (selectedQuest.objectives != null) {
-            for (QuestData.Objective obj : selectedQuest.objectives) {
-                taskY += 12;
-                boolean isDone = obj.current_progress >= obj.amount_required;
-                String status = isDone ? "§a✔ " : "§7- ";
-                String text = status + obj.description + " (" + obj.current_progress + "/" + obj.amount_required + ")";
-                
-                // Чтобы текст задач не вылезал за поля
-                guiGraphics.drawString(this.font, text, x + 5, taskY, 0xFFFFFF);
-            }
+        for (QuestData.QuestTask task : selectedQuest.tasks) {
+            taskY += 12;
+            String status = task.current_amount >= task.required_amount ? "§a✔ " : "§7- ";
+            guiGraphics.drawString(this.font, status + task.description + " (" + task.current_amount + "/" + task.required_amount + ")", 
+                x + 10, taskY, 0xFFFFFF);
         }
     }
 }
