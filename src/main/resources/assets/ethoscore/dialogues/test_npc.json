@@ -5,7 +5,7 @@
     {
       "text": "Конечно, что нужно делать?",
       "action_type": "ACCEPT_QUEST",
-      "action_value": "Калибровка Сектора 47"
+      "action_value": "calibration_47"
     },
     {
       "text": "Не сейчас.",
