@@ -8,7 +8,9 @@ import studio.arcana.ethos.EthosCore;
 import java.util.List;
 
 public class DialogueScreen extends Screen {
+    // Исправленный ResourceLocation (без предупреждений)
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/dialogue_bg.png");
+    
     private final String npcName;
     private final String dialogueText;
     private final List<DialogueOption> options;
@@ -23,11 +25,10 @@ public class DialogueScreen extends Screen {
     @Override
     protected void init() {
         int buttonWidth = 180;
-        int startY = this.height - 80; // Сдвигаем кнопки вниз экрана
+        int startY = this.height - 80; 
 
         for (int i = 0; i < options.size(); i++) {
             DialogueOption option = options.get(i);
-            // Используем наш новый класс EthosButton
             this.addRenderableWidget(new EthosButton(this.width / 2 - buttonWidth / 2, startY + (i * 22), buttonWidth, 20, 
                 Component.literal(option.text), (btn) -> {
                     option.action.run();
@@ -38,9 +39,7 @@ public class DialogueScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics);
-        
-        // Рисуем фон диалога (внизу экрана, как в RPG)
+        // Убрали renderBackground, чтобы видеть мир
         int bgW = 350;
         int bgH = 120;
         int x = this.width / 2 - bgW / 2;
@@ -48,13 +47,14 @@ public class DialogueScreen extends Screen {
         
         guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgW, bgH, bgW, bgH);
         
-        // Имя NPC
-        guiGraphics.drawString(this.font, "§6" + npcName, x + 20, y + 15, 0xFFFFFF);
-        // Текст диалога
-        guiGraphics.drawWordWrap(this.font, Component.literal(dialogueText), x + 20, y + 35, bgW - 40, 0xEEEEEE);
-
+        guiGraphics.drawString(this.font, "§6" + npcName, x + 15, y + 10, 0xFFFFFF);
+        guiGraphics.drawWordWrap(this.font, Component.literal("§f" + dialogueText), x + 15, y + 25, bgW - 30, 0xFFFFFF);
+        
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
-    public record DialogueOption(String text, Runnable action) {}
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
 }
