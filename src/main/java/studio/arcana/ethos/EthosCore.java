@@ -38,4 +38,13 @@ public class EthosCore {
         // находится в пакете studio.arcana.ethos.commands
         DialogueCommand.register(event.getDispatcher());
     }
+
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END && event.side.isClient()) {
+            // Проверяем предметы раз в секунду (20 тиков), чтобы не нагружать ПК
+            if (event.player.tickCount % 20 == 0) {
+                QuestManager.checkItems(event.player);
+            }
+        }
+    }
 }

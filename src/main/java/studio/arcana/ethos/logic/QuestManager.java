@@ -58,6 +58,27 @@ public class QuestManager {
         }
     }
 
+    public static void checkItems(net.minecraft.world.entity.player.Player player) {
+        boolean changed = false;
+        for (QuestData quest : activeQuests) {
+            for (QuestData.Objective obj : quest.objectives) {
+                if ("ITEM".equals(obj.type)) {
+                    // Считаем сколько предметов нужного типа у игрока
+                    int count = player.getInventory().items.stream()
+                        .filter(stack -> !stack.isEmpty() && stack.getItem().getDescriptionId().contains(obj.target_id.replace("minecraft:", "")))
+                        .mapToInt(net.minecraft.world.item.ItemStack::getCount)
+                        .sum();
+                
+                    if (obj.current_progress != count) {
+                        obj.current_progress = count;
+                        changed = true;
+                    }
+                }
+            }
+        }
+        if (changed) saveProgress(); // Сохраняем, если цифры изменились
+    }
+
     public static List<QuestData> getActiveQuests() {
         return activeQuests;
     }
