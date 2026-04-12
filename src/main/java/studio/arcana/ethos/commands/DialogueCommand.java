@@ -57,13 +57,12 @@ public class DialogueCommand {
                 try (Reader reader = new InputStreamReader(resource.get().open(), StandardCharsets.UTF_8)) {
                     DialogueData data = GSON.fromJson(reader, DialogueData.class);
 
+                    // Внутри метода loadAndShowDialogue, блок обработки пустых опций:
                     if (data.options == null || data.options.isEmpty()) {
-                        // ВМЕСТО СТАНДАРТНОГО ACTION BAR ИСПОЛЬЗУЕМ НАШ ОВЕРЛЕЙ
                         if (Minecraft.getInstance().player != null) {
-                            // Рассчитываем время: 40 тиков (2 сек) + по 2 тика на каждый символ
-                            int displayTime = 40 + (data.dialogue_text.length() * 2);
-                            
-                            // Вызываем DialogueOverlayHandler (который мы создали ранее)
+                            // Если в JSON указано время, берем его, если нет — считаем автоматически
+                            int displayTime = data.display_ticks > 0 ? data.display_ticks : (40 + (data.dialogue_text.length() * 2));
+        
                             DialogueOverlayHandler.show(data.npc_name, data.dialogue_text, displayTime);
                         }
                     } else {
