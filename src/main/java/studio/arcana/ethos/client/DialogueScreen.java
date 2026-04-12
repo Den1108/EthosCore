@@ -2,11 +2,13 @@ package studio.arcana.ethos.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import studio.arcana.ethos.EthosCore;
 import java.util.List;
 
 public class DialogueScreen extends Screen {
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/dialogue_bg.png");
     private final String npcName;
     private final String dialogueText;
     private final List<DialogueOption> options;
@@ -20,15 +22,17 @@ public class DialogueScreen extends Screen {
 
     @Override
     protected void init() {
-        int buttonWidth = 200;
-        int startY = this.height / 2 + 20;
+        int buttonWidth = 180;
+        int startY = this.height - 80; // Сдвигаем кнопки вниз экрана
 
         for (int i = 0; i < options.size(); i++) {
             DialogueOption option = options.get(i);
-            this.addRenderableWidget(Button.builder(Component.literal(option.text), (button) -> {
-                option.action.run();
-                this.onClose();
-            }).bounds(this.width / 2 - buttonWidth / 2, startY + (i * 24), buttonWidth, 20).build());
+            // Используем наш новый класс EthosButton
+            this.addRenderableWidget(new EthosButton(this.width / 2 - buttonWidth / 2, startY + (i * 22), buttonWidth, 20, 
+                Component.literal(option.text), (btn) -> {
+                    option.action.run();
+                    this.onClose();
+            }));
         }
     }
 
@@ -36,30 +40,21 @@ public class DialogueScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics);
         
-        int bgX = this.width / 2 - 160;
-        int bgY = this.height / 2 - 80;
-        // Отрисовка основного окна диалога
-        guiGraphics.fill(bgX, bgY, bgX + 320, bgY + 160, 0xCC000000);
+        // Рисуем фон диалога (внизу экрана, как в RPG)
+        int bgW = 350;
+        int bgH = 120;
+        int x = this.width / 2 - bgW / 2;
+        int y = this.height - bgH - 10;
         
-        // Текст
-        guiGraphics.drawString(this.font, "§b" + npcName, bgX + 15, bgY + 15, 0xFFFFFF);
-        guiGraphics.drawWordWrap(this.font, Component.literal(dialogueText), bgX + 15, bgY + 40, 290, 0xDDDDDD);
+        guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgW, bgH, bgW, bgH);
+        
+        // Имя NPC
+        guiGraphics.drawString(this.font, "§6" + npcName, x + 20, y + 15, 0xFFFFFF);
+        // Текст диалога
+        guiGraphics.drawWordWrap(this.font, Component.literal(dialogueText), x + 20, y + 35, bgW - 40, 0xEEEEEE);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
-    @Override
-    public boolean isPauseScreen() {
-        return false; // Игра не ставится на паузу в диалоге (как в сюжетных сборках)
-    }
-
-    public static class DialogueOption {
-        String text;
-        Runnable action;
-
-        public DialogueOption(String text, Runnable action) {
-            this.text = text;
-            this.action = action;
-        }
-    }
+    public record DialogueOption(String text, Runnable action) {}
 }
