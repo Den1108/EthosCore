@@ -8,7 +8,7 @@ import studio.arcana.ethos.EthosCore;
 import java.util.List;
 
 public class DialogueScreen extends Screen {
-    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/dialogue_bg.png");
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID + ":" + "textures/gui/dialogue_bg.png");
     private final String npcName;
     private final String dialogueText;
     private final List<DialogueOption> options;

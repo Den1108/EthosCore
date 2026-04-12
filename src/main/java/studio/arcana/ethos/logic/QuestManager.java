@@ -14,13 +14,15 @@ import java.util.List;
 public class QuestManager {
     private static final Gson GSON = new Gson();
     private static List<QuestData> activeQuests = new ArrayList<>();
-    private static List<String> completedQuestIds = new ArrayList<>();
 
-    // Путь к файлу сохранения в папке мира
     private static File getSaveFile() {
-        File dir = new File(Minecraft.getInstance().gameDirectory, "saves/" + Minecraft.getInstance().getSingleplayerServer().getWorldData().getLevelName() + "/ethos");
-        if (!dir.exists()) dir.mkdirs();
-        return new File(dir, "player_quests.json");
+        // Проверяем, зашел ли игрок в мир
+        if (Minecraft.getInstance().level == null) return null;
+        
+        // Путь: .minecraft/saves/Название_Мира/ethos/player_quests.json
+        File saveDir = new File(Minecraft.getInstance().gameDirectory, "saves/" + Minecraft.getInstance().getSingleplayerServer().getWorldData().getLevelName() + "/ethos");
+        if (!saveDir.exists()) saveDir.mkdirs();
+        return new File(saveDir, "player_quests.json");
     }
 
     public static void acceptQuest(QuestData quest) {
@@ -31,7 +33,10 @@ public class QuestManager {
     }
 
     public static void saveProgress() {
-        try (FileWriter writer = new FileWriter(getSaveFile())) {
+        File file = getSaveFile();
+        if (file == null) return;
+
+        try (FileWriter writer = new FileWriter(file)) {
             GSON.toJson(activeQuests, writer);
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,14 +45,20 @@ public class QuestManager {
 
     public static void loadProgress() {
         File file = getSaveFile();
-        if (file.exists()) {
+        if (file != null && file.exists()) {
             try (FileReader reader = new FileReader(file)) {
-                activeQuests = GSON.fromJson(reader, new TypeToken<List<QuestData>>(){}.getType());
+                List<QuestData> loaded = GSON.fromJson(reader, new TypeToken<List<QuestData>>(){}.getType());
+                if (loaded != null) activeQuests = loaded;
             } catch (Exception e) {
+                // Вместо ошибки в лог просто создаем пустой список
                 activeQuests = new ArrayList<>();
             }
+        } else {
+            activeQuests = new ArrayList<>();
         }
     }
 
-    public static List<QuestData> getActiveQuests() { return activeQuests; }
+    public static List<QuestData> getActiveQuests() {
+        return activeQuests;
+    }
 }

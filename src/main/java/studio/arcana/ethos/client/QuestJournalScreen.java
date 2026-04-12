@@ -10,7 +10,7 @@ import studio.arcana.ethos.logic.QuestManager;
 
 public class QuestJournalScreen extends Screen {
     // Путь к текстуре фона журнала
-    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/journal_bg.png");
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID + ":" + "textures/gui/journal_bg.png");
     
     // Размеры текстуры (те, что мы обсуждали)
     private final int bgWidth = 1280 ;

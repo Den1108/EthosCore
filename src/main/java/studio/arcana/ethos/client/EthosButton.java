@@ -7,8 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import studio.arcana.ethos.EthosCore;
 
 public class EthosButton extends Button {
-    private static final ResourceLocation IDLE = new ResourceLocation(EthosCore.MODID, "textures/gui/button_idle.png");
-    private static final ResourceLocation HOVER = new ResourceLocation(EthosCore.MODID, "textures/gui/button_hover.png");
+    private static final ResourceLocation IDLE = new ResourceLocation(EthosCore.MODID + ":" + "textures/gui/button_idle.png");
+    private static final ResourceLocation HOVER = new ResourceLocation(EthosCore.MODID + ":" + "textures/gui/button_hover.png");
 
     public EthosButton(int x, int y, int width, int height, Component message, OnPress onPress) {
         super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
