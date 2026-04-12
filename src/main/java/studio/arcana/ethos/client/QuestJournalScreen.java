@@ -11,7 +11,7 @@ import studio.arcana.ethos.logic.QuestManager;
 public class QuestJournalScreen extends Screen {
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/journal_bg.png");
     
-    // Жестко задаем размер окна на экране
+    // Теперь это и размер окна, и размер картинки. Один к одному.
     private final int bgWidth = 300; 
     private final int bgHeight = 200;
 
@@ -26,10 +26,10 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // Кнопки слева
-        int buttonX = x + 12; 
+        // Кнопки на левой странице
+        int buttonX = x + 10; 
         int buttonY = y + 35;
-        int buttonWidth = 120; 
+        int buttonWidth = 125; 
 
         this.clearWidgets();
 
@@ -55,28 +55,26 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // РЕШЕНИЕ ПРОБЛЕМЫ:
-        // Параметры по порядку: Текстура, X, Y, U, V, Ширина_Окна, Высота_Окна, Ширина_Файла, Высота_Файла
-        // Мы берем файл 600x400 и втискиваем его в 300x200 БЕЗ искажений
-        guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, 300, 200, 600, 400);
+        // САМЫЙ ПРОСТОЙ БЛИТ:
+        // Рисует картинку 300x200 из файла 300x200. Никакого растяжения.
+        guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgWidth, bgHeight, bgWidth, bgHeight);
         
-        // Заголовок слева
+        // Текст "ЗАДАНИЯ" (лево)
         guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 72, y + 15, 0xFFFFFF);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        // Правая панель
+        // Правая панель (Детали)
         int rightX = x + 155; 
         int rightY = y + 15;
         
         if (selectedQuest != null) {
-            // Название квеста
+            // Название
             guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightX + 65, rightY, 0xFFFFFF);
             
-            // Описание (ширина 130 чтобы не вылезало)
-            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 25, 130, 0xDDDDDD);
+            // Описание (ширина 130 чтобы не вылезало за край 300)
+            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 22, 130, 0xDDDDDD);
             
-            // Задачи
             int taskY = rightY + 80;
             guiGraphics.drawString(this.font, "§6Задачи:", rightX, taskY, 0xFFFFFF);
             
