@@ -25,8 +25,6 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // Кнопки: x + 6 (запас от рамки 3px). 
-        // При ширине 135 они закончатся на 143 пикселе (аккурат перед твоей рамкой сгиба 144)
         int buttonX = x + 6; 
         int buttonY = y + 35;
         int buttonWidth = 135; 
@@ -55,25 +53,27 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // Отрисовка фона 300x200 из файла 300x200
         guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgWidth, bgHeight, 300, 200);
         
-        // Заголовок левой страницы (центр страницы — 75 пиксель)
         guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 75, y + 15, 0xFFFFFF);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        // Правая страница (начало текста с 158 пикселя, сразу после рамки сгиба)
-        int rightX = x + 164; 
+        // --- ПРАВАЯ СТРАНИЦА ---
+        // Смещаем rightX чуть вправо (на 166), чтобы текст не лип к сгибу
+        int rightX = x + 166; 
         int rightY = y + 15;
         
         if (selectedQuest != null) {
-            // Название квеста по центру правой страницы (160 + 66 = ~226 пиксель холста)
-            guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightX + 62, rightY, 0xFFFFFF);
+            // 1. НАЗВАНИЕ: Центрируем относительно правой страницы. 
+            // Ширина правой страницы ~130 пикселей, значит центр на +65 от rightX.
+            guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightX + 60, rightY, 0xFFFFFF);
             
-            // Описание. Ширина 130, чтобы точно не упереться в правую рамку (297)
-            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 22, 130, 0xDDDDDD);
+            // 2. ОПИСАНИЕ: Теперь рисуется ровно от rightX
+            // Ширину делаем 120, чтобы текст не вылез за правую рамку (166 + 120 = 286 пиксель)
+            guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 22, 120, 0xDDDDDD);
             
+            // 3. ЗАДАЧИ: Тоже от rightX
             int taskY = rightY + 80;
             guiGraphics.drawString(this.font, "§6Задачи:", rightX, taskY, 0xFFFFFF);
             
@@ -85,8 +85,7 @@ public class QuestJournalScreen extends Screen {
                 }
             }
         } else if (!QuestManager.getActiveQuests().isEmpty()) {
-            // Если квесты есть, но ни один не выбран
-            guiGraphics.drawCenteredString(this.font, "§8Выберите задание", rightX + 68, y + 90, 0x888888);
+            guiGraphics.drawCenteredString(this.font, "§8Выберите задание", rightX + 60, y + 90, 0x888888);
         }
     }
 
