@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import studio.arcana.ethos.EthosCore;
+import studio.arcana.ethos.client.DialogueOverlayHandler;
 import studio.arcana.ethos.client.DialogueOption;
 import studio.arcana.ethos.client.DialogueScreen;
 import studio.arcana.ethos.data.DialogueData;
