@@ -1,8 +1,10 @@
 package studio.arcana.ethos.commands;
 
+import studio.arcana.ethos.EthosCore;
 import studio.arcana.ethos.data.DialogueData;
-import studio.arcana.ethos.client.DialogueScreen;
+import studio.arcana.ethos.data.QuestData;
 import studio.arcana.ethos.logic.QuestManager;
+import studio.arcana.ethos.client.DialogueScreen;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
@@ -36,7 +38,6 @@ public class DialogueCommand {
 
     private static void loadAndShowDialogue(String dialogueName) {
         try {
-            // Путь к файлу: assets/ethoscore/dialogues/test_npc.json
             ResourceLocation location = new ResourceLocation(EthosCore.MODID, "dialogues/" + dialogueName + ".json");
             Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(location);
 
@@ -53,8 +54,6 @@ public class DialogueCommand {
 
                     Minecraft.getInstance().setScreen(new DialogueScreen(data.npc_name, data.dialogue_text, options));
                 }
-            } else {
-                Minecraft.getInstance().player.sendSystemMessage(Component.literal("§cОшибка: Файл диалога не найден!"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,8 +64,21 @@ public class DialogueCommand {
         if ("MESSAGE".equals(type)) {
             Minecraft.getInstance().player.sendSystemMessage(Component.literal(value));
         } else if ("ACCEPT_QUEST".equals(type)) {
-            QuestManager.acceptQuest(value);
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("§6[Ethos]: §fВы приняли квест: " + value));
+            // ИСПРАВЛЕНИЕ 2: Загружаем данные квеста из JSON по его ID (value)
+            try {
+                ResourceLocation qLoc = new ResourceLocation(EthosCore.MODID, "quests/" + value + ".json");
+                Optional<Resource> qRes = Minecraft.getInstance().getResourceManager().getResource(qLoc);
+                
+                if (qRes.isPresent()) {
+                    try (Reader reader = new InputStreamReader(qRes.get().open(), StandardCharsets.UTF_8)) {
+                        QuestData quest = GSON.fromJson(reader, QuestData.class);
+                        QuestManager.acceptQuest(quest);
+                        Minecraft.getInstance().player.sendSystemMessage(Component.literal("§6[Ethos]: §fВы приняли квест: §e" + quest.title));
+                    }
+                }
+            } catch (Exception e) {
+                Minecraft.getInstance().player.sendSystemMessage(Component.literal("§cОшибка загрузки квеста: " + value));
+            }
         }
     }
 }
