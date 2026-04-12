@@ -1,5 +1,9 @@
 package studio.arcana.ethos.commands;
 
+import studio.arcana.ethos.data.DialogueData;
+import studio.arcana.ethos.client.DialogueScreen;
+import studio.arcana.ethos.logic.QuestManager;
+
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
@@ -33,7 +37,7 @@ public class DialogueCommand {
     private static void loadAndShowDialogue(String dialogueName) {
         try {
             // Путь к файлу: assets/ethoscore/dialogues/test_npc.json
-            ResourceLocation location = new ResourceLocation("ethoscore", "dialogues/" + dialogueName + ".json");
+            ResourceLocation location = new ResourceLocation(EthosCore.MODID, "dialogues/" + dialogueName + ".json");
             Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(location);
 
             if (resource.isPresent()) {

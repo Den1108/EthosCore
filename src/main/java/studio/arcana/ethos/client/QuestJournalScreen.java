@@ -1,5 +1,7 @@
 package studio.arcana.ethos.client;
 
+import studio.arcana.ethos.logic.QuestManager;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
