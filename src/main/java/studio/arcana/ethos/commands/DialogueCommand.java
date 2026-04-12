@@ -5,6 +5,7 @@ import studio.arcana.ethos.data.DialogueData;
 import studio.arcana.ethos.data.QuestData;
 import studio.arcana.ethos.logic.QuestManager;
 import studio.arcana.ethos.client.DialogueScreen;
+import studio.arcana.ethos.client.DialogueOption;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
@@ -28,6 +29,7 @@ public class DialogueCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("ethos_test")
             .executes(context -> {
+                // Вызываем через tell(), так как команды сервера не могут напрямую открывать Screen на клиенте
                 Minecraft.getInstance().tell(() -> {
                     loadAndShowDialogue("test_npc");
                 });
@@ -36,23 +38,30 @@ public class DialogueCommand {
         );
     }
 
-    private static void loadAndShowDialogue(String dialogueName) {
+    public static void loadAndShowDialogue(String dialogueId) {
         try {
-            ResourceLocation location = new ResourceLocation(EthosCore.MODID, "dialogues/" + dialogueName + ".json");
-            Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(location);
+            ResourceLocation loc = new ResourceLocation(EthosCore.MODID, "dialogues/" + dialogueId + ".json");
+            Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(loc);
 
             if (resource.isPresent()) {
                 try (Reader reader = new InputStreamReader(resource.get().open(), StandardCharsets.UTF_8)) {
                     DialogueData data = GSON.fromJson(reader, DialogueData.class);
-                    
-                    List<DialogueScreen.DialogueOption> options = new ArrayList<>();
-                    for (DialogueData.Option opt : data.options) {
-                        options.add(new DialogueScreen.DialogueOption(opt.text, () -> {
-                            handleAction(opt.action_type, opt.action_value);
-                        }));
-                    }
 
-                    Minecraft.getInstance().setScreen(new DialogueScreen(data.npc_name, data.dialogue_text, options));
+                    // ПРОВЕРКА: Есть ли варианты выбора?
+                    if (data.options == null || data.options.isEmpty()) {
+                        // ВАРИАНТ 1: Просто фраза над инвентарем (Action Bar)
+                        if (Minecraft.getInstance().player != null) {
+                            String message = "§6" + data.npc_name + ": §f" + data.dialogue_text;
+                            Minecraft.getInstance().player.displayClientMessage(Component.literal(message), true);
+                        }
+                    } else {
+                        // ВАРИАНТ 2: Открываем полноценное меню с выбором
+                        List<DialogueOption> options = new ArrayList<>();
+                        for (DialogueData.Option opt : data.options) {
+                            options.add(new DialogueOption(opt.text, () -> handleAction(opt.action_type, opt.action_value)));
+                        }
+                        Minecraft.getInstance().setScreen(new DialogueScreen(data.npc_name, data.dialogue_text, options));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -64,7 +73,6 @@ public class DialogueCommand {
         if ("MESSAGE".equals(type)) {
             Minecraft.getInstance().player.sendSystemMessage(Component.literal(value));
         } else if ("ACCEPT_QUEST".equals(type)) {
-            // ИСПРАВЛЕНИЕ 2: Загружаем данные квеста из JSON по его ID (value)
             try {
                 ResourceLocation qLoc = new ResourceLocation(EthosCore.MODID, "quests/" + value + ".json");
                 Optional<Resource> qRes = Minecraft.getInstance().getResourceManager().getResource(qLoc);
@@ -79,6 +87,8 @@ public class DialogueCommand {
             } catch (Exception e) {
                 Minecraft.getInstance().player.sendSystemMessage(Component.literal("§cОшибка загрузки квеста: " + value));
             }
+        } else if ("CLOSE".equals(type)) {
+            // Screen закроется автоматически при нажатии кнопки (логика в DialogueScreen)
         }
     }
 }
