@@ -17,8 +17,8 @@ public class QuestJournalScreen extends Screen {
     private final int guiHeight = 200;
     
     // Реальный размер твоего файла картинки, чтобы Minecraft правильно её сжал
-    private final int texWidth = 1280;
-    private final int texHeight = 576;
+    private final int texWidth = 2048;
+    private final int texHeight = 2048;
 
     // Переменная для хранения выбранного квеста
     private QuestData selectedQuest = null;
