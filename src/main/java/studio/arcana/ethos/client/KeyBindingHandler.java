@@ -1,4 +1,4 @@
-package studio.arcana.ethos;
+package studio.arcana.ethos.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;

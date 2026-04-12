@@ -1,0 +1,21 @@
+{
+  "id": "calibration_47",
+  "title": "Калибровка Сектора 47",
+  "description": "Вике нужно ядро для запуска системы. Принеси необходимые материалы.",
+  "objectives": [
+    {
+      "type": "ITEM",
+      "target_id": "minecraft:iron_ingot",
+      "amount_required": 5,
+      "current_progress": 0,
+      "description": "Железные слитки"
+    },
+    {
+      "type": "ITEM",
+      "target_id": "minecraft:redstone",
+      "amount_required": 10,
+      "current_progress": 0,
+      "description": "Редстоун пыль"
+    }
+  ]
+}

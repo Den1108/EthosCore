@@ -1,4 +1,4 @@
-package studio.arcana.ethos;
+package studio.arcana.ethos.commands;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;

@@ -1,4 +1,4 @@
-package studio.arcana.ethos;
+package studio.arcana.ethos.data;
 
 import java.util.List;
 

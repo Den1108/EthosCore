@@ -1,4 +1,4 @@
-package studio.arcana.ethos;
+package studio.arcana.ethos.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
