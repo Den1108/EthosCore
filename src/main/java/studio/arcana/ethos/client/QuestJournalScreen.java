@@ -25,9 +25,9 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        // Кнопки: x + 8 (запас от рамки 3px). 
+        // Кнопки: x + 6 (запас от рамки 3px). 
         // При ширине 135 они закончатся на 143 пикселе (аккурат перед твоей рамкой сгиба 144)
-        int buttonX = x + 8; 
+        int buttonX = x + 6; 
         int buttonY = y + 35;
         int buttonWidth = 135; 
 
@@ -64,12 +64,12 @@ public class QuestJournalScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         // Правая страница (начало текста с 158 пикселя, сразу после рамки сгиба)
-        int rightX = x + 158; 
+        int rightX = x + 164; 
         int rightY = y + 15;
         
         if (selectedQuest != null) {
-            // Название квеста по центру правой страницы (158 + 68 = ~226 пиксель холста)
-            guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightX + 68, rightY, 0xFFFFFF);
+            // Название квеста по центру правой страницы (160 + 66 = ~226 пиксель холста)
+            guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightX + 62, rightY, 0xFFFFFF);
             
             // Описание. Ширина 130, чтобы точно не упереться в правую рамку (297)
             guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 22, 130, 0xDDDDDD);
