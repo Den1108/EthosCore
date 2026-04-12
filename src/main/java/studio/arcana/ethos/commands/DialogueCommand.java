@@ -49,7 +49,6 @@ public class DialogueCommand {
 
     public static void loadAndShowDialogue(String dialogueId) {
         try {
-            // Исправлено: использование статического метода ResourceLocation
             ResourceLocation loc = new ResourceLocation(EthosCore.MODID, "dialogues/" + dialogueId + ".json");
             Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(loc);
 
@@ -57,16 +56,16 @@ public class DialogueCommand {
                 try (Reader reader = new InputStreamReader(resource.get().open(), StandardCharsets.UTF_8)) {
                     DialogueData data = GSON.fromJson(reader, DialogueData.class);
 
-                    // ПРОВЕРКА: Есть ли варианты выбора?
                     if (data.options == null || data.options.isEmpty()) {
-                        // ВАРИАНТ 1: Просто фраза над инвентарем (Action Bar)
+                        // ВМЕСТО СТАНДАРТНОГО ACTION BAR ИСПОЛЬЗУЕМ НАШ ОВЕРЛЕЙ
                         if (Minecraft.getInstance().player != null) {
-                            String message = "§6" + data.npc_name + ": §f" + data.dialogue_text;
-                            // Второй параметр true отправляет сообщение в Action Bar
-                            Minecraft.getInstance().player.displayClientMessage(Component.literal(message), true);
+                            // Рассчитываем время: 40 тиков (2 сек) + по 2 тика на каждый символ
+                            int displayTime = 40 + (data.dialogue_text.length() * 2);
+                            
+                            // Вызываем DialogueOverlayHandler (который мы создали ранее)
+                            DialogueOverlayHandler.show(data.npc_name, data.dialogue_text, displayTime);
                         }
                     } else {
-                        // ВАРИАНТ 2: Открываем полноценное меню с выбором
                         List<DialogueOption> options = new ArrayList<>();
                         for (DialogueData.Option opt : data.options) {
                             options.add(new DialogueOption(opt.text, () -> handleAction(opt.action_type, opt.action_value)));
