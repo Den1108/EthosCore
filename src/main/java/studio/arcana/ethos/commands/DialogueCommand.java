@@ -1,20 +1,19 @@
 package studio.arcana.ethos.commands;
 
-import studio.arcana.ethos.EthosCore;
-import studio.arcana.ethos.data.DialogueData;
-import studio.arcana.ethos.data.QuestData;
-import studio.arcana.ethos.logic.QuestManager;
-import studio.arcana.ethos.client.DialogueScreen;
-import studio.arcana.ethos.client.DialogueOption;
-
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import studio.arcana.ethos.EthosCore;
+import studio.arcana.ethos.client.DialogueOption;
+import studio.arcana.ethos.client.DialogueScreen;
+import studio.arcana.ethos.data.DialogueData;
+import studio.arcana.ethos.data.QuestData;
+import studio.arcana.ethos.logic.QuestManager;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -36,10 +35,21 @@ public class DialogueCommand {
                 return 1;
             })
         );
+
+        // Дополнительная команда для теста обычных фраз (над инвентарем)
+        dispatcher.register(Commands.literal("ethos_info")
+            .executes(context -> {
+                Minecraft.getInstance().tell(() -> {
+                    loadAndShowDialogue("test_info");
+                });
+                return 1;
+            })
+        );
     }
 
     public static void loadAndShowDialogue(String dialogueId) {
         try {
+            // Исправлено: использование статического метода ResourceLocation
             ResourceLocation loc = new ResourceLocation(EthosCore.MODID, "dialogues/" + dialogueId + ".json");
             Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(loc);
 
@@ -52,6 +62,7 @@ public class DialogueCommand {
                         // ВАРИАНТ 1: Просто фраза над инвентарем (Action Bar)
                         if (Minecraft.getInstance().player != null) {
                             String message = "§6" + data.npc_name + ": §f" + data.dialogue_text;
+                            // Второй параметр true отправляет сообщение в Action Bar
                             Minecraft.getInstance().player.displayClientMessage(Component.literal(message), true);
                         }
                     } else {
@@ -70,10 +81,13 @@ public class DialogueCommand {
     }
 
     private static void handleAction(String type, String value) {
+        if (Minecraft.getInstance().player == null) return;
+
         if ("MESSAGE".equals(type)) {
             Minecraft.getInstance().player.sendSystemMessage(Component.literal(value));
         } else if ("ACCEPT_QUEST".equals(type)) {
             try {
+                // Исправлено: использование статического метода ResourceLocation
                 ResourceLocation qLoc = new ResourceLocation(EthosCore.MODID, "quests/" + value + ".json");
                 Optional<Resource> qRes = Minecraft.getInstance().getResourceManager().getResource(qLoc);
                 
@@ -88,7 +102,7 @@ public class DialogueCommand {
                 Minecraft.getInstance().player.sendSystemMessage(Component.literal("§cОшибка загрузки квеста: " + value));
             }
         } else if ("CLOSE".equals(type)) {
-            // Screen закроется автоматически при нажатии кнопки (логика в DialogueScreen)
+            // Закрытие экрана происходит автоматически в DialogueScreen через onClose()
         }
     }
 }
