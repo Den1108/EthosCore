@@ -4,15 +4,26 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import studio.arcana.ethos.EthosCore;
 import java.util.List;
 
 public class DialogueScreen extends Screen {
-    private static final ResourceLocation DIALOGUE_BG = new ResourceLocation(EthosCore.MODID, "textures/gui/dialogue_text_bg.png");
-    
+
+    // Декоративная линия под именем NPC и под фразой: 256x16 px
+    private static final ResourceLocation DECO_LINE =
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_name_line.png");
+
     private final String npcName;
     private final String dialogueText;
     private final List<DialogueOption> options;
+
+    // Параметры кнопок (подбирайте под свою текстуру)
+    private static final int BTN_WIDTH   = 220;
+    private static final int BTN_X       = 12;
+    private static final int BTN_START_Y = 12;
+    private static final int BTN_SPACING = 6;
+    private static final int BTN_PAD_V   = 10; // вертикальные поля текста внутри кнопки
 
     public DialogueScreen(String npcName, String dialogueText, List<DialogueOption> options) {
         super(Component.literal(npcName));
@@ -23,64 +34,72 @@ public class DialogueScreen extends Screen {
 
     @Override
     protected void init() {
-        int screenW = this.width;
-        int screenH = this.height;
-
-        // Кнопки слева сверху
-        int btnWidth = 240; 
-        int btnX = 15;      
-        int currentY = 15;  
-        int spacing = 8;    
+        int currentY = BTN_START_Y;
 
         for (DialogueOption option : options) {
-            String formattedOption = "[" + option.text + "]";
-            
-            // Расчет высоты с учетом увеличенного шрифта кнопок (примерно 1.2x)
-            // Мы делим ширину на масштаб, чтобы текст корректно переносился
-            List<net.minecraft.util.FormattedCharSequence> lines = this.font.split(Component.literal(formattedOption), (int)((btnWidth - 20) / 1.2f));
-            int btnHeight = (int)((lines.size() * 12) + 15);
+            // Считаем строки без скобок (на скрине скобок нет)
+            List<FormattedCharSequence> lines =
+                    this.font.split(Component.literal(option.text), BTN_WIDTH - 16);
+            int btnHeight = lines.size() * (this.font.lineHeight + 1) + BTN_PAD_V * 2;
 
-            this.addRenderableWidget(EthosButton.flexibleDialogue(btnX, currentY, btnWidth, btnHeight, 
-                Component.literal(formattedOption), (btn) -> {
-                    option.action.run();
-                    this.onClose();
-            }));
+            int finalCurrentY = currentY;
+            this.addRenderableWidget(new DialogueButton(
+                    BTN_X, currentY, BTN_WIDTH, btnHeight,
+                    Component.literal(option.text),
+                    (btn) -> {
+                        option.action.run();
+                        this.onClose();
+                    }
+            ));
 
-            currentY += btnHeight + spacing;
+            currentY += btnHeight + BTN_SPACING;
         }
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // Рисуем кнопки и всё остальное через super
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
         int screenW = this.width;
         int screenH = this.height;
 
-        // --- Фраза NPC (Поднята выше) ---
-        guiGraphics.pose().pushPose();
-        
-        float scale = 1.6f; // Чуть больше масштаб для четкости
-        guiGraphics.pose().scale(scale, scale, 1.0f);
+        // ── Блок NPC внизу по центру ────────────────────────────────────────
+        // Размеры декоративной линии
+        int lineW  = 200; // ширина отрисовки линии (исходник 256x16)
+        int lineH  = 16;
+        int lineX  = (screenW - lineW) / 2;
 
-        // baseCenterY теперь -80, что поднимает текст значительно выше хотбара
-        float baseY = (screenH - 80) / scale; 
+        // Отступ снизу — чтобы не перекрывать хотбар (хотбар ~22px)
+        int bottomMargin = 30;
+
+        // Расстояния (в px, без масштаба — шрифт уже достаточно крупный)
+        int nameH   = this.font.lineHeight;      // высота строки имени
+        int phraseH = this.font.lineHeight;      // высота строки фразы
+        int gap     = 4;                          // зазор между элементами
+
+        // Считаем Y снизу вверх:
+        // [нижняя декоративная линия] [gap] [фраза] [gap] [верхняя декоративная линия] [gap] [имя]
+        int bottomLineY  = screenH - bottomMargin - lineH;
+        int phraseY      = bottomLineY - gap - phraseH;
+        int topLineY     = phraseY - gap - lineH;
+        int nameY        = topLineY - gap - nameH;
 
         // Имя NPC
-        String nameFormatted = "— " + npcName + " —";
-        int nameW = this.font.width(nameFormatted);
-        float nameX = ((screenW / scale) - nameW) / 2.0f;
-        float nameY = baseY - 25; // Расстояние от имени до фразы
-        
-        guiGraphics.drawString(this.font, nameFormatted, (int)nameX, (int)nameY, 0xFFFFFF, true);
+        int nameW = this.font.width(npcName);
+        guiGraphics.drawString(this.font, npcName,
+                (screenW - nameW) / 2, nameY, 0xFFFFFF, true);
+
+        // Верхняя декоративная линия (под именем)
+        guiGraphics.blit(DECO_LINE, lineX, topLineY, 0, 0, lineW, lineH, 256, 16);
 
         // Фраза NPC
-        int textW = this.font.width(dialogueText);
-        float textX = ((screenW / scale) - textW) / 2.0f;
-        
-        guiGraphics.drawString(this.font, dialogueText, (int)textX, (int)baseY, 0xFFFFFF, true);
+        int phraseW = this.font.width(dialogueText);
+        guiGraphics.drawString(this.font, dialogueText,
+                (screenW - phraseW) / 2, phraseY, 0xFFFFFF, true);
 
-        guiGraphics.pose().popPose();
-
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        // Нижняя декоративная линия (под фразой)
+        guiGraphics.blit(DECO_LINE, lineX, bottomLineY, 0, 0, lineW, lineH, 256, 16);
     }
 
     @Override
