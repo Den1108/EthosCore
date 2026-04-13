@@ -41,18 +41,19 @@ public class QuestJournalScreen extends Screen {
         // 2. Кнопка "Скрыть/Отслеживать" (справа)
         if (selectedQuest != null) {
             int rightX = x + 166;
-            String btnText = selectedQuest.is_tracked ? "Скрыть" : "Отслеживать";
-            
-            this.addRenderableWidget(net.minecraft.client.gui.components.Button.builder(
+            // Можно добавить цвета прямо в текст кнопки
+            String btnText = selectedQuest.is_tracked ? "§cСкрыть" : "§aОтслеживать";
+    
+            // Используем твой кастомный класс вместо ванильного билдера
+            this.addRenderableWidget(new TrackButton(
+                rightX + 20, y + 160, 80, 20, 
                 Component.literal(btnText), 
                 (btn) -> {
                     selectedQuest.is_tracked = !selectedQuest.is_tracked;
                     QuestManager.saveProgress();
-                    this.init(); // Обновляем текст кнопки
-                })
-                .bounds(rightX + 20, y + 160, 80, 20) // Позиция внизу правой страницы
-                .build()
-            );
+                    this.init(); // Перерисовываем экран, чтобы кнопка обновила текст
+                }
+            ));
         }
     }
 
@@ -84,7 +85,7 @@ public class QuestJournalScreen extends Screen {
             }
         }
     }
-    
+
     @Override
     public boolean isPauseScreen() {
         return false; 
