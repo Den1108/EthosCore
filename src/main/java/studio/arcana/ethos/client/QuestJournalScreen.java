@@ -31,7 +31,7 @@ public class QuestJournalScreen extends Screen {
         int buttonX = x + 6; 
         int buttonY = y + 35;
         for (QuestData quest : QuestManager.getActiveQuests()) {
-            this.addRenderableWidget(new EthosButton(buttonX, buttonY, 135, 20, Component.literal(quest.title), (button) -> {
+            this.addRenderableWidget(new JournalButton(buttonX, buttonY, 135, 20, Component.literal(quest.title), (button) -> {
                 this.selectedQuest = quest;
                 this.init(); // Переинициализируем, чтобы появилась кнопка отслеживания для выбранного квеста
             }));
