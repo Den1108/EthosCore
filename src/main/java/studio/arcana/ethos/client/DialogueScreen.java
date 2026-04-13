@@ -26,28 +26,26 @@ public class DialogueScreen extends Screen {
         int screenW = this.width;
         int screenH = this.height;
 
-        // Настройки кнопок выбора (прижимаем почти в самый левый верхний угол)
-        int btnWidth = 240; // Делаем кнопки шире
-        int btnX = 10;      // Минимальный отступ слева
-        int currentY = 10;  // Минимальный отступ сверху
-        int spacing = 5;    // Расстояние между кнопками
+        // Кнопки слева сверху
+        int btnWidth = 240; 
+        int btnX = 15;      
+        int currentY = 15;  
+        int spacing = 8;    
 
         for (DialogueOption option : options) {
-            // Добавляем стилизованные скобки вокруг текста выбора
             String formattedOption = "[" + option.text + "]";
             
-            // Рассчитываем высоту кнопки в зависимости от длины текста
-            List<net.minecraft.util.FormattedCharSequence> lines = this.font.split(Component.literal(formattedOption), btnWidth - 20);
-            int btnHeight = (lines.size() * 10) + 12;
+            // Расчет высоты с учетом увеличенного шрифта кнопок (примерно 1.2x)
+            // Мы делим ширину на масштаб, чтобы текст корректно переносился
+            List<net.minecraft.util.FormattedCharSequence> lines = this.font.split(Component.literal(formattedOption), (int)((btnWidth - 20) / 1.2f));
+            int btnHeight = (int)((lines.size() * 12) + 15);
 
-            // Добавляем кнопку
             this.addRenderableWidget(EthosButton.flexibleDialogue(btnX, currentY, btnWidth, btnHeight, 
                 Component.literal(formattedOption), (btn) -> {
                     option.action.run();
                     this.onClose();
             }));
 
-            // Смещаем Y для следующей кнопки
             currentY += btnHeight + spacing;
         }
     }
@@ -57,30 +55,30 @@ public class DialogueScreen extends Screen {
         int screenW = this.width;
         int screenH = this.height;
 
-        // --- Отрисовка нижней панели (Фраза NPC) с увеличением масштаба ---
+        // --- Фраза NPC (Поднята выше) ---
         guiGraphics.pose().pushPose();
         
-        float scale = 1.5f; // Увеличиваем размер текста в 1.5 раза
+        float scale = 1.6f; // Чуть больше масштаб для четкости
         guiGraphics.pose().scale(scale, scale, 1.0f);
 
-        // Базовая высота (нижняя часть экрана). Делим на scale, чтобы координаты не улетели за экран
-        float scaledBarY = (screenH - 50) / scale; 
+        // baseCenterY теперь -80, что поднимает текст значительно выше хотбара
+        float baseY = (screenH - 80) / scale; 
 
-        // Имя NPC (Альфред) - поднимаем выше
+        // Имя NPC
         String nameFormatted = "— " + npcName + " —";
         int nameW = this.font.width(nameFormatted);
         float nameX = ((screenW / scale) - nameW) / 2.0f;
-        float nameY = scaledBarY - 25; // Подняли имя над основным текстом
+        float nameY = baseY - 25; // Расстояние от имени до фразы
         
-        guiGraphics.drawString(this.font, nameFormatted, (int)nameX, (int)nameY, 0xFFFFFF);
+        guiGraphics.drawString(this.font, nameFormatted, (int)nameX, (int)nameY, 0xFFFFFF, true);
 
-        // Сама фраза NPC
+        // Фраза NPC
         int textW = this.font.width(dialogueText);
         float textX = ((screenW / scale) - textW) / 2.0f;
         
-        guiGraphics.drawString(this.font, dialogueText, (int)textX, (int)scaledBarY, 0xFFFFFF);
+        guiGraphics.drawString(this.font, dialogueText, (int)textX, (int)baseY, 0xFFFFFF, true);
 
-        guiGraphics.pose().popPose(); // Возвращаем обычный масштаб для остального интерфейса
+        guiGraphics.pose().popPose();
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
