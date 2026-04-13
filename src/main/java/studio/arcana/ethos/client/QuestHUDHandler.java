@@ -16,37 +16,42 @@ import studio.arcana.ethos.logic.QuestManager;
 @Mod.EventBusSubscriber(modid = EthosCore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class QuestHUDHandler {
     // Используем ту же подложку, что и для диалогов, или создаем новую hud_bg.png
-    private static final ResourceLocation HUD_BG = new ResourceLocation(EthosCore.MODID, "textures/gui/overlay_bg.png");
+    private static final ResourceLocation HUD_BG = new ResourceLocation(EthosCore.MODID, "textures/gui/hud_bg.png");
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
-        // Рисуем поверх хотбара, чтобы не было конфликтов слоев
         if (!event.getOverlay().id().equals(VanillaGuiOverlay.HOTBAR.id())) return;
 
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.options.hideGui) return;
-
-        var activeQuests = QuestManager.getActiveQuests();
-        if (activeQuests.isEmpty()) return;
-
         GuiGraphics gui = event.getGuiGraphics();
-        int y = mc.getWindow().getGuiScaledHeight() / 2 - 50; // Центр экрана по вертикали
-        int x = 10; // Небольшой отступ слева
+        
+        int y = mc.getWindow().getGuiScaledHeight() / 2 - 50;
+        int x = 10;
+        int maxWidth = 150; // Ширина фона
 
-        for (QuestData quest : activeQuests) {
-            // 1. Заголовок квеста
+        for (QuestData quest : QuestManager.getActiveQuests()) {
+            // ПРОВЕРКА: Если отслеживание выключено — пропускаем
+            if (!quest.is_tracked) continue;
+
+            // Считаем высоту фона динамически
+            int linesCount = 1 + quest.objectives.size();
+            int bgHeight = (linesCount * 11) + 10;
+
+            // РИСУЕМ ТЕКСТУРУ (подложку)
+            RenderSystem.enableBlend();
+            // Используем overlay_bg.png, которую мы делали для диалогов
+            gui.blit(HUD_BG, x - 5, y - 5, 0, 0, maxWidth, bgHeight, maxWidth, bgHeight);
+
+            // РИСУЕМ ТЕКСТ
             gui.drawString(mc.font, "§e" + quest.title, x, y, 0xFFFFFF);
             y += 12;
 
-            // 2. Список задач
             for (QuestData.Objective obj : quest.objectives) {
                 String status = obj.current_progress >= obj.amount_required ? "§a✔" : "§7-";
-                String text = String.format("%s §f%s: §b%d/%d", status, obj.description, obj.current_progress, obj.amount_required);
-                
-                gui.drawString(mc.font, text, x + 5, y, 0xFFFFFF, true);
+                gui.drawString(mc.font, status + " §f" + obj.description + ": §b" + obj.current_progress + "/" + obj.amount_required, x + 5, y, 0xFFFFFF);
                 y += 10;
             }
-            y += 5; // Отступ между квестами
+            y += 10; // Отступ между квестами
         }
     }
 }

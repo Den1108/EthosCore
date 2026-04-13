@@ -6,6 +6,7 @@ public class QuestData {
     public String id;
     public String title;
     public String description;
+    public boolean is_tracked = true;
     public List<Objective> objectives;
 
     public static class Objective {

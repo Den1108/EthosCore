@@ -25,70 +25,66 @@ public class QuestJournalScreen extends Screen {
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
-        int buttonX = x + 6; 
-        int buttonY = y + 35;
-        int buttonWidth = 135; 
-
         this.clearWidgets();
 
+        // 1. Кнопки списка квестов (слева)
+        int buttonX = x + 6; 
+        int buttonY = y + 35;
         for (QuestData quest : QuestManager.getActiveQuests()) {
-            this.addRenderableWidget(new EthosButton(
-                buttonX, 
-                buttonY, 
-                buttonWidth, 
-                20, 
-                Component.literal(quest.title), 
-                (button) -> {
-                    this.selectedQuest = quest;
-                }
-            ));
+            this.addRenderableWidget(new EthosButton(buttonX, buttonY, 135, 20, Component.literal(quest.title), (button) -> {
+                this.selectedQuest = quest;
+                this.init(); // Переинициализируем, чтобы появилась кнопка отслеживания для выбранного квеста
+            }));
             buttonY += 24;
+        }
+
+        // 2. Кнопка "Скрыть/Отслеживать" (справа)
+        if (selectedQuest != null) {
+            int rightX = x + 166;
+            String btnText = selectedQuest.is_tracked ? "Скрыть" : "Отслеживать";
+            
+            this.addRenderableWidget(net.minecraft.client.gui.components.Button.builder(
+                Component.literal(btnText), 
+                (btn) -> {
+                    selectedQuest.is_tracked = !selectedQuest.is_tracked;
+                    QuestManager.saveProgress();
+                    this.init(); // Обновляем текст кнопки
+                })
+                .bounds(rightX + 20, y + 160, 80, 20) // Позиция внизу правой страницы
+                .build()
+            );
         }
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(guiGraphics);
-        
         int x = (this.width - bgWidth) / 2;
         int y = (this.height - bgHeight) / 2;
         
         guiGraphics.blit(BG_TEXTURE, x, y, 0, 0, bgWidth, bgHeight, 300, 200);
-        
         guiGraphics.drawCenteredString(this.font, "§6§lЗАДАНИЯ", x + 75, y + 15, 0xFFFFFF);
 
+        // ВАЖНО: Рисуем виджеты (кнопки)
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        // --- ПРАВАЯ СТРАНИЦА ---
-        // Смещаем rightX чуть вправо (на 166), чтобы текст не лип к сгибу
-        int rightX = x + 166; 
-        int rightY = y + 15;
-        
+        // Отрисовка текста описания (без создания кнопок!)
         if (selectedQuest != null) {
-            // 1. НАЗВАНИЕ: Центрируем относительно правой страницы. 
-            // Ширина правой страницы ~130 пикселей, значит центр на +65 от rightX.
+            int rightX = x + 166;
+            int rightY = y + 15;
             guiGraphics.drawCenteredString(this.font, "§e" + selectedQuest.title, rightX + 60, rightY, 0xFFFFFF);
-            
-            // 2. ОПИСАНИЕ: Теперь рисуется ровно от rightX
-            // Ширину делаем 120, чтобы текст не вылез за правую рамку (166 + 120 = 286 пиксель)
             guiGraphics.drawWordWrap(this.font, Component.literal("§7" + selectedQuest.description), rightX, rightY + 22, 120, 0xDDDDDD);
             
-            // 3. ЗАДАЧИ: Тоже от rightX
             int taskY = rightY + 80;
             guiGraphics.drawString(this.font, "§6Задачи:", rightX, taskY, 0xFFFFFF);
-            
-            if (selectedQuest.objectives != null) {
-                for (QuestData.Objective obj : selectedQuest.objectives) {
-                    taskY += 12;
-                    String status = (obj.current_progress >= obj.amount_required) ? "§a✔ " : "§8- ";
-                    guiGraphics.drawString(this.font, status + "§f" + obj.description, rightX, taskY, 0xFFFFFF);
-                }
+            for (QuestData.Objective obj : selectedQuest.objectives) {
+                taskY += 12;
+                String status = (obj.current_progress >= obj.amount_required) ? "§a✔ " : "§8- ";
+                guiGraphics.drawString(this.font, status + "§f" + obj.description, rightX, taskY, 0xFFFFFF);
             }
-        } else if (!QuestManager.getActiveQuests().isEmpty()) {
-            guiGraphics.drawCenteredString(this.font, "§8Выберите задание", rightX + 60, y + 90, 0x888888);
         }
     }
-
+    
     @Override
     public boolean isPauseScreen() {
         return false; 
