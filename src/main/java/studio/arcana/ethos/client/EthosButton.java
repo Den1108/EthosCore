@@ -23,17 +23,15 @@ public class EthosButton extends Button {
         this.texH = texH;
     }
 
-    // --- НОВЫЙ МЕТОД ДЛЯ ГИБКИХ КНОПОК (как у Альфреда) ---
+    // --- НОВЫЙ МЕТОД ДЛЯ ГИБКИХ КНОПОК ---
     public static EthosButton flexibleDialogue(int x, int y, int width, int height, Component msg, OnPress onPress) {
         return new EthosButton(x, y, width, height, msg, 
             ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_btn_idle.png"),
             ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_btn_hover.png"),
-            // Важно: если текстура должна тянуться, тут лучше использовать 9-slice, 
-            // но пока оставим как есть, чтобы не ломать твою логику.
-            width, height, onPress);
+            256, 256, // Размер файла текстуры (рекомендую 256x256)
+            onPress);
     }
 
-    // Твои старые методы (остаются без изменений для совместимости)
     public static EthosButton dialogue(int x, int y, Component msg, OnPress onPress) {
         return flexibleDialogue(x, y, 180, 20, msg, onPress);
     }
@@ -58,22 +56,19 @@ public class EthosButton extends Button {
         Minecraft mc = Minecraft.getInstance();
         
         // 1. Отрисовка подложки
-        // Если текстура 256x256, укажи 256, 256 в конце.
         guiGraphics.blit(texture, this.getX(), this.getY(), 0, 0, this.width, this.height, this.texW, this.texH);
         
-        // 2. Отрисовка многострочного текста (как на скрине)
-        int color = this.isHoveredOrFocused() ? 0xFFFFA0 : 0xFFFFFF;
+        // 2. Отрисовка многострочного текста
+        int color = this.isHoveredOrFocused() ? 0xFFFFA0 : 0xFFFFFF; // Желтоватый цвет при наведении
         
-        // Разбиваем текст кнопки, чтобы он влез по ширине
-        List<FormattedCharSequence> lines = mc.font.split(this.getMessage(), this.width - 15);
+        List<FormattedCharSequence> lines = mc.font.split(this.getMessage(), this.width - 20);
         
-        // Центрируем блок текста по вертикали внутри кнопки
         int textHeight = lines.size() * 10;
         int startY = this.getY() + (this.height - textHeight + 2) / 2;
 
         for (FormattedCharSequence line : lines) {
-            // Рисуем каждую строку
-            guiGraphics.drawCenteredString(mc.font, line, this.getX() + this.width / 2, startY, color);
+            // Изменено: рисуем текст с левого края (отступ 8 пикселей), а не по центру
+            guiGraphics.drawString(mc.font, line, this.getX() + 8, startY, color, true);
             startY += 10;
         }
     }
