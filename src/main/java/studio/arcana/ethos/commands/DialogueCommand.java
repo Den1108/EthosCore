@@ -50,7 +50,7 @@ public class DialogueCommand {
 
     public static void loadAndShowDialogue(String dialogueId) {
         try {
-            ResourceLocation loc = new ResourceLocation(EthosCore.MODID, "dialogues/" + dialogueId + ".json");
+            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "dialogues/" + dialogueId + ".json");
             Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(loc);
 
             if (resource.isPresent()) {
@@ -87,7 +87,7 @@ public class DialogueCommand {
         } else if ("ACCEPT_QUEST".equals(type)) {
             try {
                 // Исправлено: использование статического метода ResourceLocation
-                ResourceLocation qLoc = new ResourceLocation(EthosCore.MODID, "quests/" + value + ".json");
+                ResourceLocation qLoc = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "quests/" + value + ".json");
                 Optional<Resource> qRes = Minecraft.getInstance().getResourceManager().getResource(qLoc);
                 
                 if (qRes.isPresent()) {

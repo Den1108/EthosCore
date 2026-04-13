@@ -9,7 +9,7 @@ import studio.arcana.ethos.data.QuestData;
 import studio.arcana.ethos.logic.QuestManager;
 
 public class QuestJournalScreen extends Screen {
-    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(EthosCore.MODID, "textures/gui/journal_bg.png");
+    private static final ResourceLocation BG_TEXTURE = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/journal_bg.png");
     
     private final int bgWidth = 300; 
     private final int bgHeight = 200;

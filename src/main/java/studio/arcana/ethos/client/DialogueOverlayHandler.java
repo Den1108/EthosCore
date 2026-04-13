@@ -16,11 +16,15 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = EthosCore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = net.minecraftforge.api.distmarker.Dist.CLIENT)
 public class DialogueOverlayHandler {
-    private static final ResourceLocation OVERLAY_BG = new ResourceLocation(EthosCore.MODID, "textures/gui/overlay_bg.png");
+    private static final ResourceLocation OVERLAY_BG = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/overlay_bg.png");
     
     private static String npcName = "";
     private static String fullText = "";
     private static int timer = 0;
+
+    // Твои размеры 400x60
+    private static final int BG_W = 400;
+    private static final int BG_H = 60;
 
     public static void show(String name, String text, int ticks) {
         npcName = name;
@@ -37,35 +41,34 @@ public class DialogueOverlayHandler {
         int screenW = mc.getWindow().getGuiScaledWidth();
         int screenH = mc.getWindow().getGuiScaledHeight();
 
-        // 1. Увеличиваем ширину текста (как у Шахрезады)
-        int maxWidth = 320; 
-        List<FormattedCharSequence> lines = mc.font.split(Component.literal(fullText), maxWidth);
-        
-        int padding = 6;
-        int lineHeight = 10;
-        int totalHeight = (lines.size() * lineHeight) + 12; 
-        
-        // Центрируем по горизонтали
-        int x = (screenW - maxWidth) / 2;
-        
-        // 2. Опускаем максимально низко к хотбару
-        // Подбирай это число (55-65), чтобы панель не накладывалась на ячейки инвентаря
-        int y = screenH - 58 - totalHeight; 
+        // 1. Формируем сообщение: [Имя]: Текст
+        String prefix = "§d[" + npcName + "]: ";
+        String fullMessage = prefix + "§f" + fullText;
 
-        // 3. Рисуем длинную подложку
+        // 2. Настройка переноса (отступаем по 15 пикселей от краев рамки)
+        int textMaxWidth = BG_W - 30; 
+        List<FormattedCharSequence> lines = mc.font.split(Component.literal(fullMessage), textMaxWidth);
+        
+        // 3. Позиционирование панели по центру экрана
+        int x = (screenW - BG_W) / 2;
+        // 65 — это отступ от нижнего края экрана, чтобы висело ровно над опытом
+        int y = screenH - 65 - BG_H; 
+
         RenderSystem.enableBlend();
-        // Используем blit или fill для создания полупрозрачного черного фона
-        // Если у тебя есть текстура overlay_bg.png, она растянется под размер maxWidth
-        gui.blit(OVERLAY_BG, x - padding, y - padding, 0, 0, maxWidth + (padding * 2), totalHeight + padding, maxWidth + (padding * 2), totalHeight + padding);
+        
+        // 4. Отрисовка твоей текстуры 400x60 (без растяжения)
+        // Если твой файл .png размером 400x60, последние два параметра должны быть 400, 60.
+        // Если файл 512x64, то последние два параметра — 512, 64.
+        gui.blit(OVERLAY_BG, x, y, 0, 0, BG_W, BG_H, BG_W, BG_H);
 
-        // 4. Имя NPC (Розовым/Фиолетовым как на скрине)
-        gui.drawString(mc.font, "§d[" + npcName + "]:", x, y, 0xFFFFFF);
-
-        // 5. Текст (Белым, начинаем чуть правее имени или сразу под ним)
-        int currentY = y + 11;
+        // 5. Отрисовка текста внутри рамки
+        // Центрируем текст по вертикали внутри 60 пикселей высоты
+        int currentY = y + (BG_H / 2) - (lines.size() * 10 / 2); 
+        
         for (FormattedCharSequence line : lines) {
-            gui.drawString(mc.font, line, x, currentY, 0xFFFFFF, true); // true добавляет тень буквам
-            currentY += lineHeight;
+            // x + 15 — небольшой отступ слева внутри рамки
+            gui.drawString(mc.font, line, x + 15, currentY, 0xFFFFFF, true);
+            currentY += 10;
         }
 
         timer--;
