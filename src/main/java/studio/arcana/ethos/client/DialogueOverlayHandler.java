@@ -22,6 +22,9 @@ public class DialogueOverlayHandler {
     private static String fullText = "";
     private static int timer = 0;
 
+    // Фиксированная ширина панели
+    private static final int FIXED_WIDTH = 300;
+
     public static void show(String name, String text, int ticks) {
         npcName = name;
         fullText = text;
@@ -42,26 +45,20 @@ public class DialogueOverlayHandler {
         String message = "§f" + fullText;
         Component fullComp = Component.literal(prefix + message);
 
-        // 2. Динамический расчет размеров
-        int maxAllowedWidth = 280; // Максимальная ширина, чтобы не было слишком длинно
-        int textWidth = mc.font.width(fullComp);
+        // 2. Расчет строк исходя из фиксированной ширины (минус отступы по 10 пикселей)
+        List<FormattedCharSequence> lines = mc.font.split(fullComp, FIXED_WIDTH - 20);
         
-        // Ширина плашки: либо ширина текста + отступы, либо максимум
-        int finalBGW = Math.min(textWidth + 20, maxAllowedWidth); 
-        List<FormattedCharSequence> lines = mc.font.split(fullComp, finalBGW - 20);
-        
-        // Высота плашки подстраивается под количество строк
+        // Высота все еще динамическая, чтобы текст не вылезал за границы при переносе
         int finalBGH = (lines.size() * 10) + 12;
 
-        int x = (screenW - finalBGW) / 2;
-        int y = screenH - 58 - finalBGH; // Позиция над хотбаром
+        int x = (screenW - FIXED_WIDTH) / 2;
+        int y = screenH - 58 - finalBGH; 
 
         RenderSystem.enableBlend();
         
-        // 3. Отрисовка текстуры (из файла 256x256)
-        // Мы берем область 0,0 -> finalBGW, finalBGH и рисуем её на экране.
-        // Последние два параметра (256, 256) — это реальный размер твоего файла.
-        gui.blit(OVERLAY_BG, x, y, 0, 0, finalBGW, finalBGH, 512, 512);
+        // 3. Отрисовка текстуры (Ширина всегда FIXED_WIDTH)
+        // Мы берем область 0,0 из твоего файла 512x512
+        gui.blit(OVERLAY_BG, x, y, 0, 0, FIXED_WIDTH, finalBGH, 512, 512);
 
         // 4. Отрисовка текста
         int currentY = y + 6;

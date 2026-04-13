@@ -15,8 +15,8 @@ public class DialogueScreen extends Screen {
     private final String dialogueText;
     private final List<DialogueOption> options;
 
-    // Параметры панели выносим в константы для удобства расчетов
-    private final int barW = 400; 
+    // Параметры текстовой панели
+    private final int barW = 320; 
     private final int barH = 60;
 
     public DialogueScreen(String npcName, String dialogueText, List<DialogueOption> options) {
@@ -31,24 +31,23 @@ public class DialogueScreen extends Screen {
         int screenW = this.width;
         int screenH = this.height;
 
-        // 1. Рассчитываем позицию панели (поднимаем чуть выше, чтобы влезли кнопки)
-        int barX = (screenW - barW) / 2;
-        int barY = screenH - 100; // Подняли (было -20)
-
-        // 2. Рассчитываем кнопки в ряд под панелью
-        int buttonWidth = 80; // Используем размер track кнопки (80), так как они короче и влезут в ряд
-        int spacing = 5;      // Расстояние между кнопками
-        int totalButtonsWidth = (options.size() * buttonWidth) + ((options.size() - 1) * spacing);
+        // --- ЛОГИКА КНОПОК (Вертикально справа) ---
+        int btnWidth = 120; // Сделаем их чуть шире для удобства клика
+        int btnHeight = 20;
+        int spacing = 10;   // Расстояние между кнопками
         
-        // Начальная точка X, чтобы ряд кнопок был по центру под панелью
-        int startBtnX = (screenW - totalButtonsWidth) / 2;
-        int btnY = barY + barH + 5; // Сразу под панелью с небольшим отступом
+        // Координата X: прижимаем к правому краю с отступом 20
+        int btnX = screenW - btnWidth - 20; 
+        
+        // Координата Y: начинаем чуть выше середины экрана
+        int totalHeight = (options.size() * (btnHeight + spacing)) - spacing;
+        int startY = (screenH / 2) - (totalHeight / 2);
 
         for (int i = 0; i < options.size(); i++) {
             DialogueOption option = options.get(i);
             
-            // Используем EthosButton.track, так как она 80x20 и лучше всего подходит для ряда
-            this.addRenderableWidget(EthosButton.track(startBtnX + (i * (buttonWidth + spacing)), btnY, 
+            // Используем стандартную кнопку диалога, но с нашими координатами
+            this.addRenderableWidget(EthosButton.dialogue(btnX, startY + (i * (btnHeight + spacing)), 
                 Component.literal(option.text), (btn) -> {
                     option.action.run();
                     this.onClose();
@@ -61,23 +60,24 @@ public class DialogueScreen extends Screen {
         int screenW = this.width;
         int screenH = this.height;
 
-        // Те же координаты, что и в init
+        // Координаты панели (ровно над хотбаром)
         int barX = (screenW - barW) / 2;
-        int barY = screenH - 100; 
+        int barY = screenH - 75; 
 
-        // 1. Отрисовка подложки текста (400x60)
-        guiGraphics.blit(TEXT_BG, barX, barY, 0, 0, barW, barH, barW, barH);
+        // 1. Отрисовка подложки текста
+        guiGraphics.blit(TEXT_BG, barX, barY, 0, 0, barW, barH, 512, 512);
         
-        // 2. Имя NPC и текст
+        // 2. Имя и текст
         guiGraphics.drawString(this.font, "§6" + npcName, barX + 15, barY + 10, 0xFFFFFF);
-        guiGraphics.drawWordWrap(this.font, Component.literal("§f" + dialogueText), barX + 15, barY + 22, barW - 30, 0xFFFFFF);
+        guiGraphics.drawWordWrap(this.font, Component.literal("§f" + dialogueText), 
+            barX + 15, barY + 22, barW - 30, 0xFFFFFF);
 
-        // 3. Аватар (теперь он тоже чуть выше вместе с панелью)
-        int portraitSize = 64;
-        int portraitX = barX + barW + 5;
-        int portraitY = barY + (barH - portraitSize) / 2; // Центрируем аватар по высоте панели
+        // 3. Аватар (ставим его слева от текстовой панели, чтобы не мешал кнопкам справа)
+        int portraitSize = 50;
+        int portraitX = barX - portraitSize - 5;
+        int portraitY = barY + (barH - portraitSize) / 2;
         
-        guiGraphics.blit(AVATAR_FRAME, portraitX, portraitY, 0, 0, portraitSize, portraitSize, portraitSize, portraitSize);
+        guiGraphics.blit(AVATAR_FRAME, portraitX, portraitY, 0, 0, portraitSize, portraitSize, 512, 512);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
