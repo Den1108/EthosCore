@@ -29,7 +29,7 @@ public class DialogueScreen extends Screen {
 
         for (int i = 0; i < options.size(); i++) {
             DialogueOption option = options.get(i);
-            this.addRenderableWidget(new DialogueButton(this.width / 2 - buttonWidth / 2, startY + (i * 22), buttonWidth, 20, 
+            this.addRenderableWidget(EthosButton.dialogue(this.width / 2 - 90, startY + (i * 22),
                 Component.literal(option.text), (btn) -> {
                     option.action.run();
                     this.onClose();

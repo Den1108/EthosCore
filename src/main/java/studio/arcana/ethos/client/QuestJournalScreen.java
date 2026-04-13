@@ -31,12 +31,13 @@ public class QuestJournalScreen extends Screen {
         int buttonX = x + 6; 
         int buttonY = y + 35;
         for (QuestData quest : QuestManager.getActiveQuests()) {
-            this.addRenderableWidget(new JournalButton(buttonX, buttonY, 135, 20, Component.literal(quest.title), (button) -> {
-                this.selectedQuest = quest;
-                this.init(); // Переинициализируем, чтобы появилась кнопка отслеживания для выбранного квеста
-            }));
-            buttonY += 24;
-        }
+            this.addRenderableWidget(EthosButton.journal(buttonX, buttonY, 
+                Component.literal(quest.title), (button) -> {
+                    this.selectedQuest = quest;
+                    this.init(); // Переинициализируем, чтобы появилась кнопка отслеживания для выбранного квеста
+                }));
+                buttonY += 24;
+            }
 
         // 2. Кнопка "Скрыть/Отслеживать" (справа)
         if (selectedQuest != null) {
@@ -45,10 +46,8 @@ public class QuestJournalScreen extends Screen {
             String btnText = selectedQuest.is_tracked ? "§cСкрыть" : "§aОтслеживать";
     
             // Используем твой кастомный класс вместо ванильного билдера
-            this.addRenderableWidget(new TrackButton(
-                rightX + 20, y + 160, 80, 20, 
-                Component.literal(btnText), 
-                (btn) -> {
+            this.addRenderableWidget(EthosButton.track(rightX + 20, y + 160, 
+                Component.literal(btnText), (btn) -> {
                     selectedQuest.is_tracked = !selectedQuest.is_tracked;
                     QuestManager.saveProgress();
                     this.init(); // Перерисовываем экран, чтобы кнопка обновила текст
