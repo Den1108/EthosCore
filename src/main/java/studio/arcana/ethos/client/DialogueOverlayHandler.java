@@ -16,15 +16,11 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = EthosCore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = net.minecraftforge.api.distmarker.Dist.CLIENT)
 public class DialogueOverlayHandler {
-    private static final ResourceLocation OVERLAY_BG = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/overlay_bg.png");
+    private static final ResourceLocation OVERLAY_BG = new ResourceLocation(EthosCore.MODID, "textures/gui/overlay_bg.png");
     
     private static String npcName = "";
     private static String fullText = "";
     private static int timer = 0;
-
-    // Уменьшенные размеры под скриншот (300x40)
-    private static final int BG_W = 300;
-    private static final int BG_H = 40;
 
     public static void show(String name, String text, int ticks) {
         npcName = name;
@@ -41,28 +37,35 @@ public class DialogueOverlayHandler {
         int screenW = mc.getWindow().getGuiScaledWidth();
         int screenH = mc.getWindow().getGuiScaledHeight();
 
-        // Имя и текст в одну строку
+        // 1. Подготовка текста
         String prefix = "§d[" + npcName + "]: ";
-        String fullMessage = prefix + "§f" + fullText;
+        String message = "§f" + fullText;
+        Component fullComp = Component.literal(prefix + message);
 
-        // Максимальная ширина текста внутри рамки (с отступами)
-        int textMaxWidth = BG_W - 20; 
-        List<FormattedCharSequence> lines = mc.font.split(Component.literal(fullMessage), textMaxWidth);
+        // 2. Динамический расчет размеров
+        int maxAllowedWidth = 280; // Максимальная ширина, чтобы не было слишком длинно
+        int textWidth = mc.font.width(fullComp);
         
-        int x = (screenW - BG_W) / 2;
-        // Позиция над хотбаром (чуть ближе к нему)
-        int y = screenH - 55 - BG_H; 
+        // Ширина плашки: либо ширина текста + отступы, либо максимум
+        int finalBGW = Math.min(textWidth + 20, maxAllowedWidth); 
+        List<FormattedCharSequence> lines = mc.font.split(fullComp, finalBGW - 20);
+        
+        // Высота плашки подстраивается под количество строк
+        int finalBGH = (lines.size() * 10) + 12;
+
+        int x = (screenW - finalBGW) / 2;
+        int y = screenH - 58 - finalBGH; // Позиция над хотбаром
 
         RenderSystem.enableBlend();
         
-        // Отрисовка текстуры 300x40 (убедись, что файл overlay_bg.png тоже 300x40 или 512x64)
-        gui.blit(OVERLAY_BG, x, y, 0, 0, BG_W, BG_H, BG_W, BG_H);
+        // 3. Отрисовка текстуры (из файла 256x256)
+        // Мы берем область 0,0 -> finalBGW, finalBGH и рисуем её на экране.
+        // Последние два параметра (256, 256) — это реальный размер твоего файла.
+        gui.blit(OVERLAY_BG, x, y, 0, 0, finalBGW, finalBGH, 512, 512);
 
-        // Центрирование текста по вертикали в маленькой рамке
-        int currentY = y + (BG_H / 2) - (lines.size() * 10 / 2); 
-        
+        // 4. Отрисовка текста
+        int currentY = y + 6;
         for (FormattedCharSequence line : lines) {
-            // Небольшой отступ слева (10 пикселей)
             gui.drawString(mc.font, line, x + 10, currentY, 0xFFFFFF, true);
             currentY += 10;
         }
