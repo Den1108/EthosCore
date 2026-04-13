@@ -38,7 +38,7 @@ public class DialogueScreen extends Screen {
             int btnHeight = (lines.size() * 10) + 12;
 
             // Добавляем кнопку
-            this.addRenderableWidget(EthosButton.dialogue(btnX, currentY, btnWidth, btnHeight, 
+            this.addRenderableWidget(EthosButton.flexibleDialogue(btnX, currentY, btnWidth, btnHeight, 
                 Component.literal(option.text), (btn) -> {
                     option.action.run();
                     this.onClose();
