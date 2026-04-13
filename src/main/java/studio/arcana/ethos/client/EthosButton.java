@@ -26,22 +26,22 @@ public class EthosButton extends Button {
 
     public static EthosButton dialogue(int x, int y, Component msg, OnPress onPress) {
         return new EthosButton(x, y, 180, 20, msg, 
-            new ResourceLocation(EthosCore.MODID, "textures/gui/dialogue_btn_idle.png"),
-            new ResourceLocation(EthosCore.MODID, "textures/gui/dialogue_btn_hover.png"),
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_btn_idle.png"),
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_btn_hover.png"),
             180, 20, onPress);
     }
 
     public static EthosButton journal(int x, int y, Component msg, OnPress onPress) {
         return new EthosButton(x, y, 135, 20, msg, 
-            new ResourceLocation(EthosCore.MODID, "textures/gui/journal_btn_idle.png"),
-            new ResourceLocation(EthosCore.MODID, "textures/gui/journal_btn_hover.png"),
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/journal_btn_idle.png"),
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/journal_btn_hover.png"),
             135, 20, onPress);
     }
 
     public static EthosButton track(int x, int y, Component msg, OnPress onPress) {
         return new EthosButton(x, y, 80, 20, msg, 
-            new ResourceLocation(EthosCore.MODID, "textures/gui/track_btn_idle.png"),
-            new ResourceLocation(EthosCore.MODID, "textures/gui/track_btn_hover.png"),
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/track_btn_idle.png"),
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/track_btn_hover.png"),
             80, 20, onPress);
     }
 
