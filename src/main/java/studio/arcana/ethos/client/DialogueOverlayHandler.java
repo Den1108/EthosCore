@@ -22,9 +22,9 @@ public class DialogueOverlayHandler {
     private static String fullText = "";
     private static int timer = 0;
 
-    // Твои размеры 400x60
-    private static final int BG_W = 400;
-    private static final int BG_H = 60;
+    // Уменьшенные размеры под скриншот (300x40)
+    private static final int BG_W = 300;
+    private static final int BG_H = 40;
 
     public static void show(String name, String text, int ticks) {
         npcName = name;
@@ -41,33 +41,29 @@ public class DialogueOverlayHandler {
         int screenW = mc.getWindow().getGuiScaledWidth();
         int screenH = mc.getWindow().getGuiScaledHeight();
 
-        // 1. Формируем сообщение: [Имя]: Текст
+        // Имя и текст в одну строку
         String prefix = "§d[" + npcName + "]: ";
         String fullMessage = prefix + "§f" + fullText;
 
-        // 2. Настройка переноса (отступаем по 15 пикселей от краев рамки)
-        int textMaxWidth = BG_W - 30; 
+        // Максимальная ширина текста внутри рамки (с отступами)
+        int textMaxWidth = BG_W - 20; 
         List<FormattedCharSequence> lines = mc.font.split(Component.literal(fullMessage), textMaxWidth);
         
-        // 3. Позиционирование панели по центру экрана
         int x = (screenW - BG_W) / 2;
-        // 65 — это отступ от нижнего края экрана, чтобы висело ровно над опытом
-        int y = screenH - 65 - BG_H; 
+        // Позиция над хотбаром (чуть ближе к нему)
+        int y = screenH - 55 - BG_H; 
 
         RenderSystem.enableBlend();
         
-        // 4. Отрисовка твоей текстуры 400x60 (без растяжения)
-        // Если твой файл .png размером 400x60, последние два параметра должны быть 400, 60.
-        // Если файл 512x64, то последние два параметра — 512, 64.
+        // Отрисовка текстуры 300x40 (убедись, что файл overlay_bg.png тоже 300x40 или 512x64)
         gui.blit(OVERLAY_BG, x, y, 0, 0, BG_W, BG_H, BG_W, BG_H);
 
-        // 5. Отрисовка текста внутри рамки
-        // Центрируем текст по вертикали внутри 60 пикселей высоты
+        // Центрирование текста по вертикали в маленькой рамке
         int currentY = y + (BG_H / 2) - (lines.size() * 10 / 2); 
         
         for (FormattedCharSequence line : lines) {
-            // x + 15 — небольшой отступ слева внутри рамки
-            gui.drawString(mc.font, line, x + 15, currentY, 0xFFFFFF, true);
+            // Небольшой отступ слева (10 пикселей)
+            gui.drawString(mc.font, line, x + 10, currentY, 0xFFFFFF, true);
             currentY += 10;
         }
 
