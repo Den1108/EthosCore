@@ -8,6 +8,11 @@
       "action_value": "calibration_47"
     },
     {
+      "text": "Я подумаю.",
+      "action_type": "CLOSE",
+      "action_value": ""
+    },
+    {
       "text": "Не сейчас.",
       "action_type": "CLOSE",
       "action_value": ""
