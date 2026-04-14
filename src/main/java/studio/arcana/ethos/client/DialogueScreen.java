@@ -27,8 +27,8 @@ public class DialogueScreen extends Screen {
     private static final int BTN_PAD_V   = 14;
 
     // --- Масштаб имени NPC и фразы ---
-    private static final float NAME_SCALE   = 1.8f;  // имя крупнее
-    private static final float PHRASE_SCALE = 1.4f;  // фраза чуть меньше имени
+    private static final float NAME_SCALE   = 1.9f;  // имя крупнее
+    private static final float PHRASE_SCALE = 1.7f;  // фраза чуть меньше имени
 
     public DialogueScreen(String npcName, String dialogueText, List<DialogueOption> options) {
         super(Component.literal(npcName));
