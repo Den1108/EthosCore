@@ -16,7 +16,7 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(modid = EthosCore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = net.minecraftforge.api.distmarker.Dist.CLIENT)
 public class DialogueOverlayHandler {
-    private static final ResourceLocation OVERLAY_BG = new ResourceLocation(EthosCore.MODID, "textures/gui/overlay_bg.png");
+    private static final ResourceLocation OVERLAY_BG = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/overlay_bg.png");
     
     private static String npcName = "";
     private static String fullText = "";
