@@ -20,7 +20,7 @@ public class DialogueScreen extends Screen {
     // --- Параметры кнопок ---
     private static final int BTN_WIDTH   = 310;
     private static final int BTN_X       = 10;
-    private static final int BTN_START_Y = 16;
+    private static final int BTN_START_Y = 12;
     // Одинаковый отступ между всеми кнопками — никаких индивидуальных смещений
     private static final int BTN_SPACING = 10;
     private static final int BTN_PAD_V   = 14;
