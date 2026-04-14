@@ -24,7 +24,7 @@ public class DialogueScreen extends Screen {
     private static final int BTN_START_Y = 16;
     private static final int BTN_SPACING = 8;
     // Увеличили вертикальные поля внутри кнопки, чтобы кнопки были выше
-    private static final int BTN_PAD_V   = 14;
+    private static final int BTN_PAD_V   = 16;
 
     // --- Масштаб имени NPC и фразы ---
     private static final float NAME_SCALE   = 1.8f;  // имя крупнее
@@ -80,7 +80,7 @@ public class DialogueScreen extends Screen {
         int lineX  = (screenW - lineW) / 2;
 
         // Подняли блок NPC выше — увеличили bottomMargin
-        int bottomMargin = 80;
+        int bottomMargin = 75;
 
         // Реальные высоты текста с учётом масштабов
         int nameH   = (int) (this.font.lineHeight * NAME_SCALE);
