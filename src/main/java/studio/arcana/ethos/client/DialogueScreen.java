@@ -39,18 +39,24 @@ public class DialogueScreen extends Screen {
 
     @Override
     protected void init() {
+        // Смещение по Y для каждой кнопки: 1-я выше на 3px, 2-я без смещения, 3-я ниже на 3px
+        int[] btnOffsets = { -3, 0, 3 };
+
         int currentY = BTN_START_Y;
 
-        for (DialogueOption option : options) {
-            // Считаем строки с учётом масштаба текста на кнопке (1.5x из DialogueButton)
+        for (int i = 0; i < options.size(); i++) {
+            DialogueOption option = options.get(i);
+
             int wrapWidth = (int) ((BTN_WIDTH - 16) / 1.5f);
             List<FormattedCharSequence> lines =
                     this.font.split(Component.literal(option.text), wrapWidth);
-            // Высота кнопки учитывает масштаб текста
             int btnHeight = (int) (lines.size() * (this.font.lineHeight + 1) * 1.5f) + BTN_PAD_V * 2;
 
+            // Берём смещение для текущей кнопки (если кнопок больше 3 — смещение 0)
+            int offset = (i < btnOffsets.length) ? btnOffsets[i] : 0;
+
             this.addRenderableWidget(new DialogueButton(
-                    BTN_X, currentY, BTN_WIDTH, btnHeight,
+                    BTN_X, currentY + offset, BTN_WIDTH, btnHeight,
                     Component.literal(option.text),
                     (btn) -> {
                         option.action.run();
