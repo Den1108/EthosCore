@@ -3,17 +3,17 @@
   "dialogue_text": "Система EthosCore запущена. Мне нужны данные из сектора 47 для калибровки. Поможешь?",
   "options": [
     {
-      "text": "Проверка связи... Система EthosCore работает в штатном",
+      "text": "Зачем мне с тобой сидеть? У меня свои дела.",
       "action_type": "ACCEPT_QUEST",
       "action_value": "calibration_47"
     },
     {
-      "text": "Я подумаю.",
+      "text": "Расскажи, что случилось?",
       "action_type": "CLOSE",
       "action_value": ""
     },
     {
-      "text": "Проверка связи... Система EthosCore работает в штатном",
+      "text": "Если ты так просишь, я останусь с тобой на ночь.",
       "action_type": "CLOSE",
       "action_value": ""
     }
