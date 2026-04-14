@@ -22,7 +22,7 @@ public class DialogueScreen extends Screen {
     private static final int BTN_X       = 10;
     private static final int BTN_START_Y = 16;
     // Одинаковый отступ между всеми кнопками — никаких индивидуальных смещений
-    private static final int BTN_SPACING = 8;
+    private static final int BTN_SPACING = 10;
     private static final int BTN_PAD_V   = 14;
 
     // --- Масштаб имени NPC и фразы ---
