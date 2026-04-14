@@ -80,7 +80,7 @@ public class DialogueScreen extends Screen {
         int lineX  = (screenW - lineW) / 2;
 
         // Подняли блок NPC выше — увеличили bottomMargin
-        int bottomMargin = 67;
+        int bottomMargin = 65;
 
         // Реальные высоты текста с учётом масштабов
         int nameH   = (int) (this.font.lineHeight * NAME_SCALE);
