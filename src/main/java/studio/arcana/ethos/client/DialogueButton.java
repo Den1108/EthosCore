@@ -15,7 +15,7 @@ public class DialogueButton extends Button {
     private final ResourceLocation hover = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_btn_hover.png");
 
     // Масштаб текста на кнопке
-    private static final float TEXT_SCALE = 1.5f;
+    private static final float TEXT_SCALE = 1.7f;
 
     // Левый отступ текста внутри кнопки (в экранных пикселях)
     private static final int TEXT_PADDING_LEFT = 12;
