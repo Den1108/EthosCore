@@ -3,7 +3,7 @@
   "dialogue_text": "Система EthosCore запущена. Мне нужны данные из сектора 47 для калибровки. Поможешь?",
   "options": [
     {
-      "text": "Проверка связи... Система EthosCore работает в штатном режиме.",
+      "text": "Проверка связи... Система EthosCore работает в штатном",
       "action_type": "ACCEPT_QUEST",
       "action_value": "calibration_47"
     },
@@ -13,7 +13,7 @@
       "action_value": ""
     },
     {
-      "text": "Проверка связи... Система EthosCore работает в штатном режиме.",
+      "text": "Проверка связи... Система EthosCore работает в штатном",
       "action_type": "CLOSE",
       "action_value": ""
     }
