@@ -89,7 +89,7 @@ public class DialogueScreen extends Screen {
             com.mojang.blaze3d.systems.RenderSystem.enableBlend();
     
             // Рисуем текстуру
-            uiGraphics.blit(DIALOGUE_BG, 0, bgY, screenW, bgHeight, 0.0f, 0.0f, 1024, 256, 1024, 256);
+            guiGraphics.blit(DIALOGUE_BG, 0, bgY, screenW, bgHeight, 0.0f, 0.0f, 1024, 256, 1024, 256);
     
             // Выключаем блендинг после отрисовки, чтобы не сломать другие элементы интерфейса
             com.mojang.blaze3d.systems.RenderSystem.disableBlend();
