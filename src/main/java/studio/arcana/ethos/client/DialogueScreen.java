@@ -81,13 +81,18 @@ public class DialogueScreen extends Screen {
         // --- Измененная логика фона ---
         int bgPaddingTop = 15; 
         int bgY = nameY - bgPaddingTop;
-        
-        // Высота теперь рассчитывается как: Полная высота экрана минус точка начала фона
         int bgHeight = screenH - bgY; 
         
         // Рендерим фон (он растянется до самого низа экрана)
         if (bgHeight > 0) {
-            guiGraphics.blit(DIALOGUE_BG, 0, bgY, screenW, bgHeight, 0.0f, 0.0f, 512, 128, 512, 128);
+            // Включаем поддержку прозрачности
+            com.mojang.blaze3d.systems.RenderSystem.enableBlend();
+    
+            // Рисуем текстуру
+            uiGraphics.blit(DIALOGUE_BG, 0, bgY, screenW, bgHeight, 0.0f, 0.0f, 1024, 256, 1024, 256);
+    
+            // Выключаем блендинг после отрисовки, чтобы не сломать другие элементы интерфейса
+            com.mojang.blaze3d.systems.RenderSystem.disableBlend();
         }
 
         // --- Имя NPC ---
