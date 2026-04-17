@@ -13,7 +13,6 @@ public class DialogueScreen extends Screen {
     private static final ResourceLocation DECO_LINE =
             ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_name_line.png");
             
-    // Новая текстура для фона под текстом
     private static final ResourceLocation DIALOGUE_BG =
             ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_bg.png");
 
@@ -21,14 +20,12 @@ public class DialogueScreen extends Screen {
     private final String dialogueText;
     private final List<DialogueOption> options;
 
-    // --- Параметры кнопок ---
     private static final int BTN_WIDTH   = 310;
     private static final int BTN_X       = 10;
     private static final int BTN_START_Y = 10;
     private static final int BTN_SPACING = 10;
     private static final int BTN_PAD_V   = 16;
 
-    // --- Масштаб имени NPC и фразы ---
     private static final float NAME_SCALE   = 1.9f;
     private static final float PHRASE_SCALE = 1.7f;
 
@@ -42,13 +39,10 @@ public class DialogueScreen extends Screen {
     @Override
     protected void init() {
         int currentY = BTN_START_Y;
-
         for (int i = 0; i < options.size(); i++) {
             DialogueOption option = options.get(i);
-
             int wrapWidth = (int) ((BTN_WIDTH - 16) / 1.5f);
-            List<FormattedCharSequence> lines =
-                    this.font.split(Component.literal(option.text), wrapWidth);
+            List<FormattedCharSequence> lines = this.font.split(Component.literal(option.text), wrapWidth);
             int btnHeight = (int) (lines.size() * (this.font.lineHeight + 1) * 1.5f) + BTN_PAD_V * 2;
 
             this.addRenderableWidget(new DialogueButton(
@@ -59,7 +53,6 @@ public class DialogueScreen extends Screen {
                         this.onClose();
                     }
             ));
-
             currentY += btnHeight + BTN_SPACING;
         }
     }
@@ -76,7 +69,6 @@ public class DialogueScreen extends Screen {
         int lineX  = (screenW - lineW) / 2;
 
         int bottomMargin = 65;
-
         int nameH   = (int) (this.font.lineHeight * NAME_SCALE);
         int phraseH = (int) (this.font.lineHeight * PHRASE_SCALE);
         int gap     = 6;
@@ -86,17 +78,17 @@ public class DialogueScreen extends Screen {
         int topLineY     = phraseY - gap - lineH;
         int nameY        = topLineY - gap - nameH;
 
-        // --- Отрисовка фона на всю ширину ---
-        int bgPaddingTop = 15;    // Отступ фона над именем
-        int bgPaddingBottom = 15; // Отступ фона под нижней линией
-        
+        // --- Измененная логика фона ---
+        int bgPaddingTop = 15; 
         int bgY = nameY - bgPaddingTop;
-        int bgHeight = (bottomLineY + lineH + bgPaddingBottom) - bgY;
         
-        // Рисуем фон: он растянется по ширине (screenW) и высчитанной высоте (bgHeight).
-        // Последние 4 числа — это uWidth, vHeight (сколько брать из картинки) и размеры самого файла (512x128).
-        // Если сделаете файл другого размера, измените последние четыре числа на ваши.
-        guiGraphics.blit(DIALOGUE_BG, 0, bgY, screenW, bgHeight, 0.0f, 0.0f, 512, 128, 512, 128);
+        // Высота теперь рассчитывается как: Полная высота экрана минус точка начала фона
+        int bgHeight = screenH - bgY; 
+        
+        // Рендерим фон (он растянется до самого низа экрана)
+        if (bgHeight > 0) {
+            guiGraphics.blit(DIALOGUE_BG, 0, bgY, screenW, bgHeight, 0.0f, 0.0f, 512, 128, 512, 128);
+        }
 
         // --- Имя NPC ---
         int nameRawW = this.font.width(npcName);
@@ -109,7 +101,6 @@ public class DialogueScreen extends Screen {
         guiGraphics.drawString(this.font, npcName, 0, 0, 0xFFFFFF, true);
         guiGraphics.pose().popPose();
 
-        // Верхняя декоративная линия
         guiGraphics.blit(DECO_LINE, lineX, topLineY, 0, 0, lineW, lineH, 256, 16);
 
         // --- Фраза NPC ---
@@ -123,7 +114,6 @@ public class DialogueScreen extends Screen {
         guiGraphics.drawString(this.font, dialogueText, 0, 0, 0xFFFFFF, true);
         guiGraphics.pose().popPose();
 
-        // Нижняя декоративная линия
         guiGraphics.blit(DECO_LINE, lineX, bottomLineY, 0, 0, lineW, lineH, 256, 16);
     }
 
