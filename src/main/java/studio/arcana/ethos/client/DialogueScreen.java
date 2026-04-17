@@ -12,6 +12,10 @@ public class DialogueScreen extends Screen {
 
     private static final ResourceLocation DECO_LINE =
             ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_name_line.png");
+            
+    // Новая текстура для фона под текстом
+    private static final ResourceLocation DIALOGUE_BG =
+            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_bg.png");
 
     private final String npcName;
     private final String dialogueText;
@@ -21,7 +25,6 @@ public class DialogueScreen extends Screen {
     private static final int BTN_WIDTH   = 310;
     private static final int BTN_X       = 10;
     private static final int BTN_START_Y = 10;
-    // Одинаковый отступ между всеми кнопками — никаких индивидуальных смещений
     private static final int BTN_SPACING = 10;
     private static final int BTN_PAD_V   = 16;
 
@@ -48,8 +51,6 @@ public class DialogueScreen extends Screen {
                     this.font.split(Component.literal(option.text), wrapWidth);
             int btnHeight = (int) (lines.size() * (this.font.lineHeight + 1) * 1.5f) + BTN_PAD_V * 2;
 
-            // Все кнопки идут строго одна за другой с одинаковым BTN_SPACING —
-            // никаких индивидуальных смещений больше нет
             this.addRenderableWidget(new DialogueButton(
                     BTN_X, currentY, BTN_WIDTH, btnHeight,
                     Component.literal(option.text),
@@ -84,6 +85,18 @@ public class DialogueScreen extends Screen {
         int phraseY      = bottomLineY - gap - phraseH;
         int topLineY     = phraseY - gap - lineH;
         int nameY        = topLineY - gap - nameH;
+
+        // --- Отрисовка фона на всю ширину ---
+        int bgPaddingTop = 15;    // Отступ фона над именем
+        int bgPaddingBottom = 15; // Отступ фона под нижней линией
+        
+        int bgY = nameY - bgPaddingTop;
+        int bgHeight = (bottomLineY + lineH + bgPaddingBottom) - bgY;
+        
+        // Рисуем фон: он растянется по ширине (screenW) и высчитанной высоте (bgHeight).
+        // Последние 4 числа — это uWidth, vHeight (сколько брать из картинки) и размеры самого файла (512x128).
+        // Если сделаете файл другого размера, измените последние четыре числа на ваши.
+        guiGraphics.blit(DIALOGUE_BG, 0, bgY, screenW, bgHeight, 0.0f, 0.0f, 512, 128, 512, 128);
 
         // --- Имя NPC ---
         int nameRawW = this.font.width(npcName);
