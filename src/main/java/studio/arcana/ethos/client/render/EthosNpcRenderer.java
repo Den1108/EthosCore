@@ -10,12 +10,12 @@ import studio.arcana.ethos.entity.EthosNpcEntity;
 
 public class EthosNpcRenderer extends MobRenderer<EthosNpcEntity, PlayerModel<EthosNpcEntity>> {
     
-    // Путь к текстуре скина. Обязательно закинь картинку по этому пути!
     private static final ResourceLocation NPC_TEXTURE = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/entity/npc_vika.png");
 
     public EthosNpcRenderer(EntityRendererProvider.Context context) {
-        // false означает использование широкой модели игрока (не "Alex" руки)
-        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5f);
+        // Используем PLAYER_SLIM для модели Алекс (тонкие руки)
+        // В конструкторе PlayerModel второй параметр true означает "slim model"
+        super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5f);
     }
 
     @Override

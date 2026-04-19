@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import studio.arcana.ethos.commands.DialogueCommand;
 import studio.arcana.ethos.logic.QuestManager;
+import studio.arcana.ethos.registry.ModCreativeTab;
 import studio.arcana.ethos.registry.ModRegistry;
 
 @Mod(EthosCore.MODID)
@@ -22,6 +23,7 @@ public class EthosCore {
         // Подключаем наши реестры (Сущности, Предметы)
         var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModRegistry.register(modEventBus);
+        ModCreativeTab.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         
