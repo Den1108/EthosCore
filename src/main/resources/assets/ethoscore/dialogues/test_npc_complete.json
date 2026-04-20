@@ -1,0 +1,16 @@
+{
+  "npc_name": "Техник Вика",
+  "dialogue_text": "Отлично! Вижу, у тебя всё с собой. Давай сюда, я сейчас же запущу калибровку ядра.",
+  "options": [
+    {
+      "text": "Держи материалы.",
+      "action_type": "COMPLETE_QUEST",
+      "action_value": "calibration_47"
+    },
+    {
+      "text": "Подожди, я пока оставлю их себе.",
+      "action_type": "CLOSE",
+      "action_value": ""
+    }
+  ]
+}

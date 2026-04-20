@@ -86,7 +86,6 @@ public class DialogueCommand {
             Minecraft.getInstance().player.sendSystemMessage(Component.literal(value));
         } else if ("ACCEPT_QUEST".equals(type)) {
             try {
-                // Исправлено: использование статического метода ResourceLocation
                 ResourceLocation qLoc = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "quests/" + value + ".json");
                 Optional<Resource> qRes = Minecraft.getInstance().getResourceManager().getResource(qLoc);
                 
@@ -100,8 +99,15 @@ public class DialogueCommand {
             } catch (Exception e) {
                 Minecraft.getInstance().player.sendSystemMessage(Component.literal("§cОшибка загрузки квеста: " + value));
             }
+        } else if ("COMPLETE_QUEST".equals(type)) {
+            // ЗАВЕРШЕНИЕ КВЕСТА
+            QuestManager.completeQuest(value);
+            Minecraft.getInstance().player.sendSystemMessage(Component.literal("§a[Ethos]: §fКвест выполнен!"));
+            
+            // Здесь в будущем можно добавить выдачу награды или забирание предметов из инвентаря
+            
         } else if ("CLOSE".equals(type)) {
-            // Закрытие экрана происходит автоматически в DialogueScreen через onClose()
+            // Закрытие экрана происходит автоматически
         }
     }
 }

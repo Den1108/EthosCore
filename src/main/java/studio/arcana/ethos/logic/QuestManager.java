@@ -16,10 +16,7 @@ public class QuestManager {
     private static List<QuestData> activeQuests = new ArrayList<>();
 
     private static File getSaveFile() {
-        // Проверяем, зашел ли игрок в мир
         if (Minecraft.getInstance().level == null) return null;
-        
-        // Путь: .minecraft/saves/Название_Мира/ethos/player_quests.json
         File saveDir = new File(Minecraft.getInstance().gameDirectory, "saves/" + Minecraft.getInstance().getSingleplayerServer().getWorldData().getLevelName() + "/ethos");
         if (!saveDir.exists()) saveDir.mkdirs();
         return new File(saveDir, "player_quests.json");
@@ -35,7 +32,6 @@ public class QuestManager {
     public static void saveProgress() {
         File file = getSaveFile();
         if (file == null) return;
-
         try (FileWriter writer = new FileWriter(file)) {
             GSON.toJson(activeQuests, writer);
         } catch (Exception e) {
@@ -50,7 +46,6 @@ public class QuestManager {
                 List<QuestData> loaded = GSON.fromJson(reader, new TypeToken<List<QuestData>>(){}.getType());
                 if (loaded != null) activeQuests = loaded;
             } catch (Exception e) {
-                // Вместо ошибки в лог просто создаем пустой список
                 activeQuests = new ArrayList<>();
             }
         } else {
@@ -63,7 +58,6 @@ public class QuestManager {
         for (QuestData quest : activeQuests) {
             for (QuestData.Objective obj : quest.objectives) {
                 if ("ITEM".equals(obj.type)) {
-                    // Считаем сколько предметов нужного типа у игрока
                     int count = player.getInventory().items.stream()
                         .filter(stack -> !stack.isEmpty() && stack.getItem().getDescriptionId().contains(obj.target_id.replace("minecraft:", "")))
                         .mapToInt(net.minecraft.world.item.ItemStack::getCount)
@@ -76,10 +70,38 @@ public class QuestManager {
                 }
             }
         }
-        if (changed) saveProgress(); // Сохраняем, если цифры изменились
+        if (changed) saveProgress(); 
     }
 
     public static List<QuestData> getActiveQuests() {
         return activeQuests;
+    }
+
+    // НОВЫЕ МЕТОДЫ ДЛЯ СИСТЕМЫ СТЕЙТОВ:
+
+    // 1. Проверяет, взят ли этот квест
+    public static boolean hasQuest(String questId) {
+        return activeQuests.stream().anyMatch(q -> q.id.equals(questId));
+    }
+
+    // 2. Проверяет, собраны ли все предметы для квеста
+    public static boolean isQuestComplete(String questId) {
+        for (QuestData q : activeQuests) {
+            if (q.id.equals(questId)) {
+                for (QuestData.Objective obj : q.objectives) {
+                    if (obj.current_progress < obj.amount_required) {
+                        return false; // Нашли невыполненную цель
+                    }
+                }
+                return true; // Все цели выполнены
+            }
+        }
+        return false;
+    }
+
+    // 3. Завершает квест (удаляет из списка активных)
+    public static void completeQuest(String questId) {
+        activeQuests.removeIf(q -> q.id.equals(questId));
+        saveProgress();
     }
 }

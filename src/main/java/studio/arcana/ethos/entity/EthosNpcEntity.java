@@ -11,7 +11,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import studio.arcana.ethos.commands.DialogueCommand;
-import studio.arcana.ethos.registry.ModRegistry; // Импорт реестра предметов
+import studio.arcana.ethos.logic.QuestManager;
+import studio.arcana.ethos.registry.ModRegistry;
 
 public class EthosNpcEntity extends PathfinderMob {
 
@@ -30,11 +31,9 @@ public class EthosNpcEntity extends PathfinderMob {
         }
     }
 
-    // Обработка удара (ЛКМ)
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (source.getEntity() instanceof Player player) {
-            // Если ударили удалятором - удаляем
             if (player.getMainHandItem().is(ModRegistry.NPC_REMOVER.get())) {
                 if (!this.level().isClientSide()) {
                     this.discard();
@@ -43,19 +42,31 @@ public class EthosNpcEntity extends PathfinderMob {
                 return true;
             }
         }
-        return false; // Игнорируем любой другой урон
+        return false; 
     }
 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (hand == InteractionHand.MAIN_HAND) {
-            // ВАЖНО: Если в руках удалятор, NPC не должен открывать диалог
             if (player.getItemInHand(hand).is(ModRegistry.NPC_REMOVER.get())) {
-                return InteractionResult.PASS; // Пропускаем действие, чтобы сработал предмет
+                return InteractionResult.PASS; 
             }
 
             if (this.level().isClientSide()) {
-                DialogueCommand.loadAndShowDialogue("test_npc");
+                // ЛОГИКА СТЕЙТОВ:
+                String dialogueFile = "test_npc"; // По умолчанию - первый диалог
+
+                // Если квест уже взят
+                if (QuestManager.hasQuest("calibration_47")) {
+                    // Проверяем, принес ли игрок все вещи
+                    if (QuestManager.isQuestComplete("calibration_47")) {
+                        dialogueFile = "test_npc_complete"; // Стейт 3: Квест готов к сдаче
+                    } else {
+                        dialogueFile = "test_npc_progress"; // Стейт 2: Квест в процессе
+                    }
+                }
+
+                DialogueCommand.loadAndShowDialogue(dialogueFile);
             }
             return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
@@ -71,8 +82,6 @@ public class EthosNpcEntity extends PathfinderMob {
 
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
-        // Оставляем true, чтобы стрелы и огонь не дамажили, 
-        // метод hurt() выше сам разберется с игроком
         return true;
     }
 
