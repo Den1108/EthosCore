@@ -2,6 +2,7 @@ package studio.arcana.ethos;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.IEventBus; // Добавь
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.event.TickEvent;
@@ -20,8 +21,10 @@ public class EthosCore {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public EthosCore() {
-        // Подключаем наши реестры (Сущности, Предметы)
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        // Использование FMLJavaModLoadingContext.get() устарело в новых версиях Forge.
+        // Правильный способ получить шину событий мода:
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
         ModRegistry.register(modEventBus);
         ModCreativeTab.register(modEventBus);
 

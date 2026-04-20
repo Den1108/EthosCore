@@ -10,6 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import studio.arcana.ethos.EthosCore;
 import studio.arcana.ethos.entity.EthosNpcEntity;
+import studio.arcana.ethos.item.NpcRemoverItem;
 
 public class ModRegistry {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, EthosCore.MODID);
