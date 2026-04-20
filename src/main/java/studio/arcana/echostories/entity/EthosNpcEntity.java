@@ -1,4 +1,4 @@
-package studio.arcana.ethos.entity;
+package studio.arcana.echostories.entity;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -10,9 +10,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import studio.arcana.ethos.commands.DialogueCommand;
-import studio.arcana.ethos.logic.QuestManager;
-import studio.arcana.ethos.registry.ModRegistry;
+import studio.arcana.echostories.commands.DialogueCommand;
+import studio.arcana.echostories.logic.QuestManager;
+import studio.arcana.echostories.registry.ModRegistry;
 
 public class EthosNpcEntity extends PathfinderMob {
 

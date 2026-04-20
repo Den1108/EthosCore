@@ -1,9 +1,9 @@
-package studio.arcana.ethos.logic;
+package studio.arcana.echostories.logic;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.Minecraft;
-import studio.arcana.ethos.data.QuestData;
+import studio.arcana.echostories.data.QuestData;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,7 +17,7 @@ public class QuestManager {
 
     private static File getSaveFile() {
         if (Minecraft.getInstance().level == null) return null;
-        File saveDir = new File(Minecraft.getInstance().gameDirectory, "saves/" + Minecraft.getInstance().getSingleplayerServer().getWorldData().getLevelName() + "/ethos");
+        File saveDir = new File(Minecraft.getInstance().gameDirectory, "saves/" + Minecraft.getInstance().getSingleplayerServer().getWorldData().getLevelName() + "/echostories");
         if (!saveDir.exists()) saveDir.mkdirs();
         return new File(saveDir, "player_quests.json");
     }

@@ -1,4 +1,4 @@
-package studio.arcana.ethos.item;
+package studio.arcana.echostories.item;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import studio.arcana.ethos.entity.EthosNpcEntity;
+import studio.arcana.echostories.entity.EthosNpcEntity;
 
 public class NpcRemoverItem extends Item {
     public NpcRemoverItem(Properties properties) {
@@ -19,7 +19,7 @@ public class NpcRemoverItem extends Item {
         if (target instanceof EthosNpcEntity) {
             if (!player.level().isClientSide()) {
                 target.discard();
-                player.sendSystemMessage(Component.literal("§c[Ethos]: NPC успешно удален."));
+                player.sendSystemMessage(Component.literal("§c[Echo Stories]: NPC успешно удален."));
             }
             // Возвращаем SUCCESS, чтобы анимация руки проигралась и другие события отменились
             return InteractionResult.sidedSuccess(player.level().isClientSide());

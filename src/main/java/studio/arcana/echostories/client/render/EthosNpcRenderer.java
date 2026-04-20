@@ -1,16 +1,16 @@
-package studio.arcana.ethos.client.render;
+package studio.arcana.echostories.client.render;
 
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import studio.arcana.ethos.EthosCore;
-import studio.arcana.ethos.entity.EthosNpcEntity;
+import studio.arcana.echostories.EchoStories;
+import studio.arcana.echostories.entity.EthosNpcEntity;
 
 public class EthosNpcRenderer extends MobRenderer<EthosNpcEntity, PlayerModel<EthosNpcEntity>> {
     
-    private static final ResourceLocation NPC_TEXTURE = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/entity/npc_vika.png");
+    private static final ResourceLocation NPC_TEXTURE = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/entity/npc_vika.png");
 
     public EthosNpcRenderer(EntityRendererProvider.Context context) {
         // Используем PLAYER_SLIM для модели Алекс (тонкие руки)

@@ -1,4 +1,4 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -6,13 +6,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import studio.arcana.ethos.EthosCore;
+import studio.arcana.echostories.EchoStories;
 import java.util.List;
 
 public class DialogueButton extends Button {
 
-    private final ResourceLocation idle  = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_btn_idle.png");
-    private final ResourceLocation hover = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_btn_hover.png");
+    private final ResourceLocation idle  = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/dialogue_btn_idle.png");
+    private final ResourceLocation hover = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/dialogue_btn_hover.png");
 
     // Масштаб текста на кнопке
     private static final float TEXT_SCALE = 1.7f;

@@ -3,8 +3,8 @@ loaderVersion="[47,)"
 license="MIT"
 
 [[mods]]
-modId="ethoscore"
+modId="echostories"
 version="1.0.0"
-displayName="EthosCore"
+displayName="Echo Stories"
 authors="Den1108"
 description="None"

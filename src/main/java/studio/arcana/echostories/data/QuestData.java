@@ -1,4 +1,4 @@
-package studio.arcana.ethos.data;
+package studio.arcana.echostories.data;
 
 import java.util.List;
 

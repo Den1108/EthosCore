@@ -1,4 +1,4 @@
-package studio.arcana.ethos.registry;
+package studio.arcana.echostories.registry;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -8,13 +8,13 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import studio.arcana.ethos.EthosCore;
-import studio.arcana.ethos.entity.EthosNpcEntity;
-import studio.arcana.ethos.item.NpcRemoverItem;
+import studio.arcana.echostories.EchoStories;
+import studio.arcana.echostories.entity.EthosNpcEntity;
+import studio.arcana.echostories.item.NpcRemoverItem;
 
 public class ModRegistry {
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, EthosCore.MODID);
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, EthosCore.MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, EchoStories.MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, EchoStories.MODID);
 
     public static final RegistryObject<EntityType<EthosNpcEntity>> ETHOS_NPC = ENTITY_TYPES.register("ethos_npc",
             () -> EntityType.Builder.of(EthosNpcEntity::new, MobCategory.CREATURE)

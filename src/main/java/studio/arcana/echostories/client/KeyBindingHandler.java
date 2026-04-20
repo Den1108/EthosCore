@@ -1,7 +1,7 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
-import studio.arcana.ethos.EthosCore;
-import studio.arcana.ethos.client.QuestJournalScreen;
+import studio.arcana.echostories.EchoStories;
+import studio.arcana.echostories.client.QuestJournalScreen;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -13,13 +13,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber(modid = EthosCore.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = EchoStories.MODID, value = Dist.CLIENT)
 public class KeyBindingHandler {
     public static final KeyMapping QUEST_JOURNAL_KEY = new KeyMapping(
-            "key.ethoscore.quests", 
+            "key.echostories.quests", 
             InputConstants.Type.KEYSYM, 
             GLFW.GLFW_KEY_V, 
-            "category.ethoscore"
+            "category.echostories"
     );
 
     @SubscribeEvent

@@ -1,4 +1,4 @@
-package studio.arcana.ethos;
+package studio.arcana.echostories;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -10,17 +10,17 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import studio.arcana.ethos.commands.DialogueCommand;
-import studio.arcana.ethos.logic.QuestManager;
-import studio.arcana.ethos.registry.ModCreativeTab;
-import studio.arcana.ethos.registry.ModRegistry;
+import studio.arcana.echostories.commands.DialogueCommand;
+import studio.arcana.echostories.logic.QuestManager;
+import studio.arcana.echostories.registry.ModCreativeTab;
+import studio.arcana.echostories.registry.ModRegistry;
 
-@Mod(EthosCore.MODID)
-public class EthosCore {
-    public static final String MODID = "ethoscore";
+@Mod(EchoStories.MODID)
+public class EchoStories {
+    public static final String MODID = "echostories";
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EthosCore() {
+    public EchoStories() {
         // Использование FMLJavaModLoadingContext.get() устарело в новых версиях Forge.
         // Правильный способ получить шину событий мода:
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -32,12 +32,12 @@ public class EthosCore {
         
         try {
             QuestManager.loadProgress();
-            LOGGER.info("EthosCore: Quest progress loaded.");
+            LOGGER.info("EchoStories: Quest progress loaded.");
         } catch (Exception e) {
-            LOGGER.error("EthosCore: Failed to load quest progress!");
+            LOGGER.error("EchoStories: Failed to load quest progress!");
         }
 
-        LOGGER.info("EthosCore: System Initialized");
+        LOGGER.info("EchoStories: System Initialized");
     }
 
     @SubscribeEvent

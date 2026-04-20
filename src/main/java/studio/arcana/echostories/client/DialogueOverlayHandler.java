@@ -1,4 +1,4 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -10,13 +10,13 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import studio.arcana.ethos.EthosCore;
+import studio.arcana.echostories.EchoStories;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = EthosCore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = net.minecraftforge.api.distmarker.Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = EchoStories.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = net.minecraftforge.api.distmarker.Dist.CLIENT)
 public class DialogueOverlayHandler {
-    private static final ResourceLocation OVERLAY_BG = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/overlay_bg.png");
+    private static final ResourceLocation OVERLAY_BG = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/overlay_bg.png");
     
     private static String npcName = "";
     private static String fullText = "";

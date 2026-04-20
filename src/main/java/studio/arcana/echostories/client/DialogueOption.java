@@ -1,4 +1,4 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
 public class DialogueOption {
     public final String text;

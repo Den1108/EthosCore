@@ -1,15 +1,15 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import studio.arcana.ethos.EthosCore;
-import studio.arcana.ethos.data.QuestData;
-import studio.arcana.ethos.logic.QuestManager;
+import studio.arcana.echostories.EchoStories;
+import studio.arcana.echostories.data.QuestData;
+import studio.arcana.echostories.logic.QuestManager;
 
 public class QuestJournalScreen extends Screen {
-    private static final ResourceLocation BG_TEXTURE = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/journal_bg.png");
+    private static final ResourceLocation BG_TEXTURE = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/journal_bg.png");
     
     private final int bgWidth = 300; 
     private final int bgHeight = 200;

@@ -1,4 +1,4 @@
-package studio.arcana.ethos.commands;
+package studio.arcana.echostories.commands;
 
 import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
@@ -8,13 +8,13 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import studio.arcana.ethos.EthosCore;
-import studio.arcana.ethos.client.DialogueOverlayHandler;
-import studio.arcana.ethos.client.DialogueOption;
-import studio.arcana.ethos.client.DialogueScreen;
-import studio.arcana.ethos.data.DialogueData;
-import studio.arcana.ethos.data.QuestData;
-import studio.arcana.ethos.logic.QuestManager;
+import studio.arcana.echostories.EchoStories;
+import studio.arcana.echostories.client.DialogueOverlayHandler;
+import studio.arcana.echostories.client.DialogueOption;
+import studio.arcana.echostories.client.DialogueScreen;
+import studio.arcana.echostories.data.DialogueData;
+import studio.arcana.echostories.data.QuestData;
+import studio.arcana.echostories.logic.QuestManager;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -27,7 +27,7 @@ public class DialogueCommand {
     private static final Gson GSON = new Gson();
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("ethos_test")
+        dispatcher.register(Commands.literal("echo_test")
             .executes(context -> {
                 // Вызываем через tell(), так как команды сервера не могут напрямую открывать Screen на клиенте
                 Minecraft.getInstance().tell(() -> {
@@ -38,7 +38,7 @@ public class DialogueCommand {
         );
 
         // Дополнительная команда для теста обычных фраз (над инвентарем)
-        dispatcher.register(Commands.literal("ethos_info")
+        dispatcher.register(Commands.literal("echo_info")
             .executes(context -> {
                 Minecraft.getInstance().tell(() -> {
                     loadAndShowDialogue("test_info");
@@ -50,7 +50,7 @@ public class DialogueCommand {
 
     public static void loadAndShowDialogue(String dialogueId) {
         try {
-            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "dialogues/" + dialogueId + ".json");
+            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "dialogues/" + dialogueId + ".json");
             Optional<Resource> resource = Minecraft.getInstance().getResourceManager().getResource(loc);
 
             if (resource.isPresent()) {
@@ -86,14 +86,14 @@ public class DialogueCommand {
             Minecraft.getInstance().player.sendSystemMessage(Component.literal(value));
         } else if ("ACCEPT_QUEST".equals(type)) {
             try {
-                ResourceLocation qLoc = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "quests/" + value + ".json");
+                ResourceLocation qLoc = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "quests/" + value + ".json");
                 Optional<Resource> qRes = Minecraft.getInstance().getResourceManager().getResource(qLoc);
                 
                 if (qRes.isPresent()) {
                     try (Reader reader = new InputStreamReader(qRes.get().open(), StandardCharsets.UTF_8)) {
                         QuestData quest = GSON.fromJson(reader, QuestData.class);
                         QuestManager.acceptQuest(quest);
-                        Minecraft.getInstance().player.sendSystemMessage(Component.literal("§6[Ethos]: §fВы приняли квест: §e" + quest.title));
+                        Minecraft.getInstance().player.sendSystemMessage(Component.literal("§6[Echo Stories]: §fВы приняли квест: §e" + quest.title));
                     }
                 }
             } catch (Exception e) {
@@ -102,7 +102,7 @@ public class DialogueCommand {
         } else if ("COMPLETE_QUEST".equals(type)) {
             // ЗАВЕРШЕНИЕ КВЕСТА
             QuestManager.completeQuest(value);
-            Minecraft.getInstance().player.sendSystemMessage(Component.literal("§a[Ethos]: §fКвест выполнен!"));
+            Minecraft.getInstance().player.sendSystemMessage(Component.literal("§a[Echo Stories]: §fКвест выполнен!"));
             
             // Здесь в будущем можно добавить выдачу награды или забирание предметов из инвентаря
             

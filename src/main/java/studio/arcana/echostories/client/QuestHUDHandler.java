@@ -1,4 +1,4 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -9,14 +9,14 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import studio.arcana.ethos.EthosCore;
-import studio.arcana.ethos.data.QuestData;
-import studio.arcana.ethos.logic.QuestManager;
+import studio.arcana.echostories.EchoStories;
+import studio.arcana.echostories.data.QuestData;
+import studio.arcana.echostories.logic.QuestManager;
 
-@Mod.EventBusSubscriber(modid = EthosCore.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = EchoStories.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class QuestHUDHandler {
     // Используем ту же подложку, что и для диалогов, или создаем новую hud_bg.png
-    private static final ResourceLocation HUD_BG = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/hud_bg.png");
+    private static final ResourceLocation HUD_BG = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/hud_bg.png");
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent.Post event) {

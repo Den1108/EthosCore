@@ -1,11 +1,11 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import studio.arcana.ethos.EthosCore;
+import studio.arcana.echostories.EchoStories;
 
 public class EthosButton extends Button {
     private final ResourceLocation idle;
@@ -23,15 +23,15 @@ public class EthosButton extends Button {
 
     public static EthosButton journal(int x, int y, Component msg, OnPress onPress) {
         return new EthosButton(x, y, 135, 20, msg, 
-            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/journal_btn_idle.png"),
-            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/journal_btn_hover.png"),
+            ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/journal_btn_idle.png"),
+            ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/journal_btn_hover.png"),
             135, 20, onPress);
     }
 
     public static EthosButton track(int x, int y, Component msg, OnPress onPress) {
         return new EthosButton(x, y, 80, 20, msg, 
-            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/track_btn_idle.png"),
-            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/track_btn_hover.png"),
+            ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/track_btn_idle.png"),
+            ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/track_btn_hover.png"),
             80, 20, onPress);
     }
 

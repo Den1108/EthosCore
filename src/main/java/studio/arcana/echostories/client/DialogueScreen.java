@@ -1,20 +1,20 @@
-package studio.arcana.ethos.client;
+package studio.arcana.echostories.client;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import studio.arcana.ethos.EthosCore;
+import studio.arcana.echostories.EchoStories;
 import java.util.List;
 
 public class DialogueScreen extends Screen {
 
     private static final ResourceLocation DECO_LINE =
-            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_name_line.png");
+            ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/dialogue_name_line.png");
             
     private static final ResourceLocation DIALOGUE_BG =
-            ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "textures/gui/dialogue_bg.png");
+            ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/dialogue_bg.png");
 
     private final String npcName;
     private final String dialogueText;
