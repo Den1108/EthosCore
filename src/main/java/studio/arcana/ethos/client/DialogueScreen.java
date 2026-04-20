@@ -113,7 +113,7 @@ public class DialogueScreen extends Screen {
         
         for (int i = 0; i < phraseLines.size(); i++) {
             FormattedCharSequence line = phraseLines.get(i);
-            int lineW = (int)(this.font.width(line) * PHRASE_SCALE);
+            lineW = (int)(this.font.width(line) * PHRASE_SCALE);
             int lineX = (screenW - lineW) / 2;
 
             guiGraphics.pose().pushPose();

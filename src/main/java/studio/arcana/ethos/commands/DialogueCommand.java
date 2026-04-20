@@ -91,4 +91,30 @@ public class DialogueCommand {
             }
         }
     }
+
+    // Добавь этот метод в DialogueCommand.java
+    public static void loadAndShowDialogue(String relativePath) {
+        Minecraft.getInstance().execute(() -> {
+            try {
+                ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(EthosCore.MODID, "dialogues/" + relativePath);
+                Optional<Resource> res = Minecraft.getInstance().getResourceManager().getResource(loc);
+            
+                if (res.isPresent()) {
+                    try (Reader reader = new InputStreamReader(res.get().open(), StandardCharsets.UTF_8)) {
+                        DialogueData data = GSON.fromJson(reader, DialogueData.class);
+                    
+                        List<DialogueOption> options = new ArrayList<>();
+                        for (DialogueData.Option opt : data.options) {
+                            options.add(new DialogueOption(opt.text, () -> 
+                                handleAction(data.npc_name, opt.action_type, opt.action_value, data.display_ticks)
+                            ));
+                        }
+                        Minecraft.getInstance().setScreen(new DialogueScreen(data.npc_name, data.dialogue_text, options));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }
