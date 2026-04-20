@@ -24,6 +24,9 @@ public class ModRegistry {
     // Яйцо призыва для теста
     public static final RegistryObject<Item> NPC_SPAWN_EGG = ITEMS.register("ethos_npc_spawn_egg",
             () -> new ForgeSpawnEggItem(ETHOS_NPC, 0x55FF55, 0xFFFFFF, new Item.Properties()));
+  
+    public static final RegistryObject<Item> NPC_REMOVER = ITEMS.register("npc_remover",
+            () -> new NpcRemoverItem(new Item.Properties().stacksTo(1)));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

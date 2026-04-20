@@ -18,7 +18,8 @@ public class ModCreativeTab {
                     .title(Component.translatable("itemGroup.ethos_tab"))
                     .icon(() -> new ItemStack(ModRegistry.NPC_SPAWN_EGG.get())) // Иконка вкладки - наше яйцо
                     .displayItems((parameters, output) -> {
-                        output.accept(ModRegistry.NPC_SPAWN_EGG.get()); // Добавляем яйцо во вкладку
+                        output.accept(ModRegistry.NPC_SPAWN_EGG.get());
+                        output.accept(ModRegistry.NPC_REMOVER.get());
                     })
                     .build());
 
