@@ -16,12 +16,12 @@ public class NpcRemoverItem extends Item {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
-        // Проверяем, что кликнули именно по нашему NPC
         if (target instanceof EthosNpcEntity) {
             if (!player.level().isClientSide()) {
-                target.discard(); // Удаляем сущность из мира
+                target.discard();
                 player.sendSystemMessage(Component.literal("§c[Ethos]: NPC успешно удален."));
             }
+            // Возвращаем SUCCESS, чтобы анимация руки проигралась и другие события отменились
             return InteractionResult.sidedSuccess(player.level().isClientSide());
         }
         return InteractionResult.PASS;
