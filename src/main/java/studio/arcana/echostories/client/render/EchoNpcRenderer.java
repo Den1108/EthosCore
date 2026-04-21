@@ -6,20 +6,20 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import studio.arcana.echostories.EchoStories;
-import studio.arcana.echostories.entity.EthosNpcEntity;
+import studio.arcana.echostories.entity.EchoNpcEntity;
 
-public class EthosNpcRenderer extends MobRenderer<EthosNpcEntity, PlayerModel<EthosNpcEntity>> {
+public class EchoNpcRenderer extends MobRenderer<EchoNpcEntity, PlayerModel<EchoNpcEntity>> {
     
     private static final ResourceLocation NPC_TEXTURE = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/entity/npc_vika.png");
 
-    public EthosNpcRenderer(EntityRendererProvider.Context context) {
+    public EchoNpcRenderer(EntityRendererProvider.Context context) {
         // Используем PLAYER_SLIM для модели Алекс (тонкие руки)
         // В конструкторе PlayerModel второй параметр true означает "slim model"
         super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM), true), 0.5f);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EthosNpcEntity entity) {
+    public ResourceLocation getTextureLocation(EchoNpcEntity entity) {
         return NPC_TEXTURE;
     }
 }

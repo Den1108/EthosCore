@@ -14,9 +14,9 @@ import studio.arcana.echostories.commands.DialogueCommand;
 import studio.arcana.echostories.logic.QuestManager;
 import studio.arcana.echostories.registry.ModRegistry;
 
-public class EthosNpcEntity extends PathfinderMob {
+public class EchoNpcEntity extends PathfinderMob {
 
-    public EthosNpcEntity(EntityType<? extends PathfinderMob> type, Level level) {
+    public EchoNpcEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
     }
 
@@ -37,7 +37,7 @@ public class EthosNpcEntity extends PathfinderMob {
             if (player.getMainHandItem().is(ModRegistry.NPC_REMOVER.get())) {
                 if (!this.level().isClientSide()) {
                     this.discard();
-                    player.sendSystemMessage(Component.literal("§c[Ethos]: NPC удален."));
+                    player.sendSystemMessage(Component.literal("§c[Echo Stories]: NPC успешно удален."));
                 }
                 return true;
             }

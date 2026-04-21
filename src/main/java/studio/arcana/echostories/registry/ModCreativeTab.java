@@ -13,7 +13,7 @@ public class ModCreativeTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = 
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, EchoStories.MODID);
 
-    public static final RegistryObject<CreativeModeTab> ETHOS_TAB = CREATIVE_MODE_TABS.register("ethos_tab",
+    public static final RegistryObject<CreativeModeTab> EchoStories_TAB = CREATIVE_MODE_TABS.register("echostories_tab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.echostories_tab"))
                     .icon(() -> new ItemStack(ModRegistry.NPC_SPAWN_EGG.get())) // Иконка вкладки - наше яйцо

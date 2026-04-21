@@ -6,8 +6,8 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import studio.arcana.echostories.EchoStories;
-import studio.arcana.echostories.client.render.EthosNpcRenderer;
-import studio.arcana.echostories.entity.EthosNpcEntity;
+import studio.arcana.echostories.client.render.EchoNpcRenderer;
+import studio.arcana.echostories.entity.EchoNpcEntity;
 
 public class ModEventBusEvents {
 
@@ -15,7 +15,7 @@ public class ModEventBusEvents {
     public static class CommonEvents {
         @SubscribeEvent
         public static void onAttributeCreate(EntityAttributeCreationEvent event) {
-            event.put(ModRegistry.ETHOS_NPC.get(), EthosNpcEntity.createAttributes().build());
+            event.put(ModRegistry.ECHO_NPC.get(), EchoNpcEntity.createAttributes().build());
         }
     }
 
@@ -23,7 +23,7 @@ public class ModEventBusEvents {
     public static class ClientEvents {
         @SubscribeEvent
         public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerEntityRenderer(ModRegistry.ETHOS_NPC.get(), EthosNpcRenderer::new);
+            event.registerEntityRenderer(ModRegistry.ECHO_NPC.get(), EchoNpcRenderer::new);
         }
     }
 }

@@ -1,8 +1,8 @@
 {
-  "item.ethoscore.npc_remover": "Удалятор NPC",
+  "item.echostories.npc_remover": "Удалятор NPC",
   "itemGroup.echostories_tab": "Echo Stories",
-  "item.ethoscore.ethos_npc_spawn_egg": "Яйцо призыва NPC",
-  "entity.ethoscore.ethos_npc": "NPC",
+  "item.echostories.echo_npc_spawn_egg": "Яйцо призыва NPC",
+  "entity.echostories.echo_npc": "NPC",
   "key.echostories.quests": "Открыть Журнал Квестов",
   "category.echostories": "Echo Stories"
 }

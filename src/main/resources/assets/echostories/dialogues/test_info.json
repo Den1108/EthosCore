@@ -1,6 +1,6 @@
 {
   "npc_name": "Техник Вика",
-  "dialogue_text": "Проверка связи... Система EthosCore работает в штатном режиме.",
+  "dialogue_text": "Проверка связи... Система Echo Stories работает в штатном режиме.",
   "display_ticks": 300,
   "options": []
 }

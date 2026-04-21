@@ -7,13 +7,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import studio.arcana.echostories.EchoStories;
 
-public class EthosButton extends Button {
+public class EchoButton extends Button {
     private final ResourceLocation idle;
     private final ResourceLocation hover;
     private final int texW;
     private final int texH;
 
-    private EthosButton(int x, int y, int width, int height, Component msg, ResourceLocation idle, ResourceLocation hover, int texW, int texH, OnPress onPress) {
+    private EchoButton(int x, int y, int width, int height, Component msg, ResourceLocation idle, ResourceLocation hover, int texW, int texH, OnPress onPress) {
         super(x, y, width, height, msg, onPress, DEFAULT_NARRATION);
         this.idle = idle;
         this.hover = hover;
@@ -21,15 +21,15 @@ public class EthosButton extends Button {
         this.texH = texH;
     }
 
-    public static EthosButton journal(int x, int y, Component msg, OnPress onPress) {
-        return new EthosButton(x, y, 135, 20, msg, 
+    public static EchoButton journal(int x, int y, Component msg, OnPress onPress) {
+        return new EchoButton(x, y, 135, 20, msg, 
             ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/journal_btn_idle.png"),
             ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/journal_btn_hover.png"),
             135, 20, onPress);
     }
 
-    public static EthosButton track(int x, int y, Component msg, OnPress onPress) {
-        return new EthosButton(x, y, 80, 20, msg, 
+    public static EchoButton track(int x, int y, Component msg, OnPress onPress) {
+        return new EchoButton(x, y, 80, 20, msg, 
             ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/track_btn_idle.png"),
             ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/track_btn_hover.png"),
             80, 20, onPress);
