@@ -75,7 +75,7 @@ public class DialogueScreen extends Screen {
         int screenW = this.width;
         int screenH = this.height;
 
-        int lineW  = 220;
+        int lineW  = 256;
         int lineH  = 16;
         int lineX  = (screenW - lineW) / 2;
 
@@ -137,8 +137,6 @@ public class DialogueScreen extends Screen {
         }
 
         guiGraphics.pose().popPose();
-
-        guiGraphics.blit(DECO_LINE, lineX, bottomLineY, 0, 0, lineW, lineH, 256, 16);
     }
 
     @Override
