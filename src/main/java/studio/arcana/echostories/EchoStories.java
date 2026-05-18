@@ -22,7 +22,7 @@ public class EchoStories {
 
     public EchoStories() {
         // Использование FMLJavaModLoadingContext.get() устарело в новых версиях Forge.
-        // Правильный способ получить шину событий мода:
+        // Правильный способ получить шину событий мода
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModRegistry.register(modEventBus);
