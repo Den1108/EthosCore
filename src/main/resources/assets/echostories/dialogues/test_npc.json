@@ -1,68 +1,51 @@
 {
-  "start_node": "start",
+  "start_node": "vika_msg_1",
   "nodes": [
     {
-      "id": "start",
+      "id": "vika_msg_1",
       "sender_name": "Техник Вика",
-      "dialogue_text": "Система Echo Stories запущена, но ядро работает нестабильно. Мне срочно нужны материалы из сектора 47 для калибровки. Возьмешься за это?",
-      "options": [
-        {
-          "text": "Да, без проблем. Расскажи подробнее, что нужно делать?",
-          "action_type": "NEXT_NODE",
-          "action_value": "player_reply_1"
-        },
-        {
-          "text": "Извини, я сейчас занят. У меня свои дела.",
-          "action_type": "CLOSE",
-          "action_value": ""
-        }
-      ]
+      "dialogue_text": "Эй, ты слышишь меня? Система Echo Stories запущена, но ядро работает нестабильно!",
+      "display_ticks": 100,
+      "next_node": "player_msg_2",
+      "options": []
     },
     {
-      "id": "player_reply_1",
+      "id": "player_msg_2",
       "sender_name": "CefUni1",
-      "dialogue_text": "Я готов помочь. Но сектор 47 огромен. С чего мне начать поиски и безопасно ли там вообще сейчас?",
-      "options": [
-        {
-          "text": "[Далее]",
-          "action_type": "NEXT_NODE",
-          "action_value": "vika_explain"
-        }
-      ]
+      "dialogue_text": "Да, слышу отлично. Что случилось с ядром? Я могу как-то помочь?",
+      "display_ticks": 100,
+      "next_node": "main_choice_node",
+      "options": []
     },
     {
-      "id": "vika_explain",
+      "id": "main_choice_node",
       "sender_name": "Техник Вика",
-      "dialogue_text": "Там бродят обезумевшие дроны, так что будь осторожен. Мне нужно ровно 5 железных слитков и 10 редстоуна. Ну так что, теперь по рукам?",
+      "dialogue_text": "Мне срочно нужны материалы из сектора 47 для калибровки стабилизаторов. Возьмешься за эту задачу?",
       "options": [
         {
-          "text": "По рукам. Я всё соберу и принесу.",
+          "text": "Да, без проблем. Я всё соберу и принесу.",
           "action_type": "ACCEPT_QUEST",
           "action_value": "calibration_47"
         },
         {
           "text": "А что будет, если ядро не откалибровать?",
           "action_type": "NEXT_NODE",
-          "action_value": "vika_warning"
-        }
-      ]
-    },
-    {
-      "id": "vika_warning",
-      "sender_name": "Техник Вика",
-      "dialogue_text": "Тогда весь сектор останется без энергии, а резервные батареи долго не протянут! Пожалуйста, поторопись.",
-      "options": [
+          "action_value": "vika_overlay_warning"
+                },
         {
-          "text": "Хорошо, уговорила. Берусь за работу.",
-          "action_type": "ACCEPT_QUEST",
-          "action_value": "calibration_47"
-        },
-        {
-          "text": "Все равно звучит слишком опасно. Нам не по пути.",
+          "text": "Извини, я сейчас занят.",
           "action_type": "CLOSE",
           "action_value": ""
         }
       ]
+    },
+    {
+      "id": "vika_overlay_warning",
+      "sender_name": "Техник Вика",
+      "dialogue_text": "Тогда сектор полностью обесточится! Пожалуйста, подумай ещё раз, мы рассчитываем на тебя.",
+      "display_ticks": 120,
+      "next_node": "main_choice_node",
+      "options": []
     }
   ]
 }

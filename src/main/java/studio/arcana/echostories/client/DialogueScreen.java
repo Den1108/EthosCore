@@ -39,10 +39,8 @@ public class DialogueScreen extends Screen {
         this.currentNode = startNode;
     }
 
-    // Переключение на новую реплику внутри того же экрана
     public void changeNode(DialogueData.Node newNode) {
         this.currentNode = newNode;
-        // Переинициализируем экран, чтобы очистить старые виджеты (кнопки) и построить новые
         this.init(this.minecraft, this.width, this.height);
     }
 
@@ -64,12 +62,17 @@ public class DialogueScreen extends Screen {
                         if ("NEXT_NODE".equals(option.action_type)) {
                             DialogueData.Node next = dialogueData.getNode(option.action_value);
                             if (next != null) {
-                                this.changeNode(next);
+                                if (next.options == null || next.options.isEmpty()) {
+                                    // Если у следующего шага нет кнопок, закрываем GUI и выводим его в оверлей!
+                                    this.onClose();
+                                    DialogueOverlayHandler.showNode(dialogueData, next);
+                                } else {
+                                    this.changeNode(next);
+                                }
                             } else {
                                 this.onClose();
                             }
                         } else {
-                            // Все остальные команды (квесты, сообщения) обрабатываем глобально
                             DialogueCommand.handleAction(option.action_type, option.action_value);
                             this.onClose();
                         }
@@ -95,7 +98,6 @@ public class DialogueScreen extends Screen {
         int bottomMargin = 65;
         int gap = 6;
 
-        // --- Разбиваем фразу на строки ---
         int phraseWrapWidth = (int) (PHRASE_MAX_WIDTH / PHRASE_SCALE);
         List<FormattedCharSequence> phraseLines = this.font.split(
                 Component.literal(currentNode.dialogue_text), phraseWrapWidth);
@@ -108,7 +110,6 @@ public class DialogueScreen extends Screen {
         int topLineY    = phraseY - gap - lineH;
         int nameY       = topLineY - gap - nameH;
 
-        // --- Фон ---
         int bgPaddingTop = 15;
         int bgY = nameY - bgPaddingTop;
         int bgHeight = screenH - bgY;
@@ -119,7 +120,6 @@ public class DialogueScreen extends Screen {
             com.mojang.blaze3d.systems.RenderSystem.disableBlend();
         }
 
-        // --- Имя говорящего (Вика или Игрок) ---
         int nameRawW = this.font.width(currentNode.sender_name);
         int nameScaledW = (int) (nameRawW * NAME_SCALE);
         int nameX = (screenW - nameScaledW) / 2;
@@ -132,7 +132,6 @@ public class DialogueScreen extends Screen {
 
         guiGraphics.blit(DECO_LINE, lineX, topLineY, 0, 0, lineW, lineH, 256, 16);
 
-        // --- Фраза ---
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, phraseY, 0);
         guiGraphics.pose().scale(PHRASE_SCALE, PHRASE_SCALE, 1.0f);

@@ -57,14 +57,11 @@ public class DialogueCommand {
                     DialogueData.Node startNode = data.getNode(data.start_node);
                     if (startNode == null) return;
 
-                    // Если у стартового узла нет вариантов ответа — кидаем в нижний оверлей уведомлений
+                    // Если у стартового узла нет вариантов ответа — направляем в менеджер оверлеев
                     if (startNode.options == null || startNode.options.isEmpty()) {
-                        if (Minecraft.getInstance().player != null) {
-                            int displayTime = startNode.display_ticks > 0 ? startNode.display_ticks : (40 + (startNode.dialogue_text.length() * 2));
-                            DialogueOverlayHandler.show(startNode.sender_name, startNode.dialogue_text, displayTime);
-                        }
+                        DialogueOverlayHandler.showNode(data, startNode);
                     } else {
-                        // Иначе открываем полноценное окно диалога, передавая всю структуру данных
+                        // Иначе открываем полноценный GUI
                         Minecraft.getInstance().setScreen(new DialogueScreen(data, startNode));
                     }
                 }

@@ -8,9 +8,10 @@ public class DialogueData {
 
     public static class Node {
         public String id;
-        public String sender_name; // Вместо npc_name, так как говорить может и игрок
+        public String sender_name;
         public String dialogue_text;
-        public int display_ticks; // Для оверлеев без кнопок
+        public int display_ticks;
+        public String next_node; // Поле для автоматического перехода к следующему шагу оверлея
         public List<Option> options;
     }
 
@@ -20,7 +21,6 @@ public class DialogueData {
         public String action_value; // ID следующей ноды, ID квеста, или текст сообщения
     }
 
-    // Быстрый поиск нужного шага по ID
     public Node getNode(String id) {
         if (nodes == null) return null;
         for (Node node : nodes) {
