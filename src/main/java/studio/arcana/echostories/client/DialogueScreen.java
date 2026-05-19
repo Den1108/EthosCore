@@ -19,7 +19,7 @@ public class DialogueScreen extends Screen {
     private static final ResourceLocation DIALOGUE_BG =
             ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/dialogue_bg.png");
 
-    private final DialogueData dialogueData;
+    private DialogueData dialogueData;
     private DialogueData.Node currentNode;
 
     private static final int BTN_WIDTH   = 310;
@@ -40,19 +40,20 @@ public class DialogueScreen extends Screen {
     }
 
     public void changeNode(DialogueData.Node newNode) {
-        this.currentNode = newNode;
-        // Очищаем старые кнопки перед перерисовкой новых
-        this.clearWidgets();
-        // Перевызываем метод добавления кнопок
-        this.init();
+        if (this.minecraft != null) {
+            this.minecraft.setScreen(new DialogueScreen(this.dialogueData, newNode));
+        }
     }
 
     @Override
     protected void init() {
-        if (currentNode == null || currentNode.options == null) return;
+        if (this.currentNode == null || this.currentNode.options == null) return;
+
+        // Создаем локальную копию ссылки, чтобы лямбда кнопки гарантированно ее видела и не брала null из инстанса
+        final DialogueData currentData = this.dialogueData;
 
         int currentY = BTN_START_Y;
-        for (DialogueData.Option option : currentNode.options) {
+        for (DialogueData.Option option : this.currentNode.options) {
 
             int wrapWidth = (int) ((BTN_WIDTH - 24) / BTN_TEXT_SCALE);
             List<FormattedCharSequence> lines = this.font.split(Component.literal(option.text), wrapWidth);
@@ -63,16 +64,21 @@ public class DialogueScreen extends Screen {
                     Component.literal(option.text),
                     (btn) -> {
                         if ("NEXT_NODE".equals(option.action_type)) {
-                            DialogueData.Node next = dialogueData.getNode(option.action_value);
-                            if (next != null) {
-                                if (next.options == null || next.options.isEmpty()) {
-                                    // Если у следующего шага нет кнопок, закрываем GUI и выводим его в оверлей!
-                                    this.onClose();
-                                    DialogueOverlayHandler.showNode(dialogueData, next);
+                            // Проверяем локальную финальную копию, защищенную от сброса движком игры
+                            if (currentData != null) {
+                                DialogueData.Node next = currentData.getNode(option.action_value);
+                                if (next != null) {
+                                    if (next.options == null || next.options.isEmpty()) {
+                                        this.onClose();
+                                        DialogueOverlayHandler.showNode(currentData, next);
+                                    } else {
+                                        this.changeNode(next);
+                                    }
                                 } else {
-                                    this.changeNode(next);
+                                    this.onClose();
                                 }
                             } else {
+                                // Фолбэк на случай, если всё совсем плохо — просто закрываемся
                                 this.onClose();
                             }
                         } else {
@@ -87,8 +93,6 @@ public class DialogueScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics);
-        
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         if (currentNode == null) return;
