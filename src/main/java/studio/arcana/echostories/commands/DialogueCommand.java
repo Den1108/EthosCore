@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import studio.arcana.echostories.EchoStories;
 import studio.arcana.echostories.client.DialogueOverlayHandler;
-import studio.arcana.echostories.client.DialogueOption;
 import studio.arcana.echostories.client.DialogueScreen;
 import studio.arcana.echostories.data.DialogueData;
 import studio.arcana.echostories.data.QuestData;
@@ -19,8 +18,6 @@ import studio.arcana.echostories.logic.QuestManager;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class DialogueCommand {
@@ -29,7 +26,6 @@ public class DialogueCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("echo_test")
             .executes(context -> {
-                // Вызываем через tell(), так как команды сервера не могут напрямую открывать Screen на клиенте
                 Minecraft.getInstance().tell(() -> {
                     loadAndShowDialogue("test_npc");
                 });
@@ -37,7 +33,6 @@ public class DialogueCommand {
             })
         );
 
-        // Дополнительная команда для теста обычных фраз (над инвентарем)
         dispatcher.register(Commands.literal("echo_info")
             .executes(context -> {
                 Minecraft.getInstance().tell(() -> {
@@ -56,21 +51,21 @@ public class DialogueCommand {
             if (resource.isPresent()) {
                 try (Reader reader = new InputStreamReader(resource.get().open(), StandardCharsets.UTF_8)) {
                     DialogueData data = GSON.fromJson(reader, DialogueData.class);
+                    
+                    if (data == null || data.start_node == null) return;
 
-                    // Внутри метода loadAndShowDialogue, блок обработки пустых опций:
-                    if (data.options == null || data.options.isEmpty()) {
+                    DialogueData.Node startNode = data.getNode(data.start_node);
+                    if (startNode == null) return;
+
+                    // Если у стартового узла нет вариантов ответа — кидаем в нижний оверлей уведомлений
+                    if (startNode.options == null || startNode.options.isEmpty()) {
                         if (Minecraft.getInstance().player != null) {
-                            // Если в JSON указано время, берем его, если нет — считаем автоматически
-                            int displayTime = data.display_ticks > 0 ? data.display_ticks : (40 + (data.dialogue_text.length() * 2));
-        
-                            DialogueOverlayHandler.show(data.npc_name, data.dialogue_text, displayTime);
+                            int displayTime = startNode.display_ticks > 0 ? startNode.display_ticks : (40 + (startNode.dialogue_text.length() * 2));
+                            DialogueOverlayHandler.show(startNode.sender_name, startNode.dialogue_text, displayTime);
                         }
                     } else {
-                        List<DialogueOption> options = new ArrayList<>();
-                        for (DialogueData.Option opt : data.options) {
-                            options.add(new DialogueOption(opt.text, () -> handleAction(opt.action_type, opt.action_value)));
-                        }
-                        Minecraft.getInstance().setScreen(new DialogueScreen(data.npc_name, data.dialogue_text, options));
+                        // Иначе открываем полноценное окно диалога, передавая всю структуру данных
+                        Minecraft.getInstance().setScreen(new DialogueScreen(data, startNode));
                     }
                 }
             }
@@ -79,7 +74,7 @@ public class DialogueCommand {
         }
     }
 
-    private static void handleAction(String type, String value) {
+    public static void handleAction(String type, String value) {
         if (Minecraft.getInstance().player == null) return;
 
         if ("MESSAGE".equals(type)) {
@@ -100,14 +95,8 @@ public class DialogueCommand {
                 Minecraft.getInstance().player.sendSystemMessage(Component.literal("§cОшибка загрузки квеста: " + value));
             }
         } else if ("COMPLETE_QUEST".equals(type)) {
-            // ЗАВЕРШЕНИЕ КВЕСТА
             QuestManager.completeQuest(value);
             Minecraft.getInstance().player.sendSystemMessage(Component.literal("§a[Echo Stories]: §fКвест выполнен!"));
-            
-            // Здесь в будущем можно добавить выдачу награды или забирание предметов из инвентаря
-            
-        } else if ("CLOSE".equals(type)) {
-            // Закрытие экрана происходит автоматически
         }
     }
 }

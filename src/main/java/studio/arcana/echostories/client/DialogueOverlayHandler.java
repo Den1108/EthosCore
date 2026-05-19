@@ -18,7 +18,7 @@ import java.util.List;
 public class DialogueOverlayHandler {
     private static final ResourceLocation OVERLAY_BG = ResourceLocation.fromNamespaceAndPath(EchoStories.MODID, "textures/gui/overlay_bg.png");
     
-    private static String npcName = "";
+    private static String senderName = ""; // Переименовали, так как говорить может и игрок
     private static String fullText = "";
     private static int timer = 0;
 
@@ -26,7 +26,7 @@ public class DialogueOverlayHandler {
     private static final int FIXED_WIDTH = 300;
 
     public static void show(String name, String text, int ticks) {
-        npcName = name;
+        senderName = name;
         fullText = text;
         timer = ticks;
     }
@@ -40,8 +40,13 @@ public class DialogueOverlayHandler {
         int screenW = mc.getWindow().getGuiScaledWidth();
         int screenH = mc.getWindow().getGuiScaledHeight();
 
-        // 1. Подготовка текста
-        String prefix = "§d[" + npcName + "]: ";
+        // 1. Подготовка текста с динамическим цветом префикса
+        String colorCode = "§d"; // По умолчанию розовый цвет для NPC
+        if (mc.player != null && senderName.equals(mc.player.getName().getString())) {
+            colorCode = "§6"; // Золотой цвет, если оверлей отображает реплику текущего игрока (CefUni1)
+        }
+
+        String prefix = colorCode + "[" + senderName + "]: ";
         String message = "§f" + fullText;
         Component fullComp = Component.literal(prefix + message);
 
@@ -57,7 +62,6 @@ public class DialogueOverlayHandler {
         RenderSystem.enableBlend();
         
         // 3. Отрисовка текстуры (Ширина всегда FIXED_WIDTH)
-        // Мы берем область 0,0 из твоего файла 512x512
         gui.blit(OVERLAY_BG, x, y, 0, 0, FIXED_WIDTH, finalBGH, 512, 512);
 
         // 4. Отрисовка текста
