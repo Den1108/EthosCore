@@ -41,7 +41,10 @@ public class DialogueScreen extends Screen {
 
     public void changeNode(DialogueData.Node newNode) {
         this.currentNode = newNode;
-        this.init(this.minecraft, this.width, this.height);
+        // Очищаем старые кнопки перед перерисовкой новых
+        this.clearWidgets();
+        // Перевызываем метод добавления кнопок
+        this.init();
     }
 
     @Override
@@ -84,6 +87,8 @@ public class DialogueScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(guiGraphics);
+        
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         if (currentNode == null) return;
